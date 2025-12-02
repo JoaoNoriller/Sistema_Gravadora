@@ -1,5 +1,7 @@
-package com.gravadora.projeto.service;
+import org.springframework.stereotype.Service;
 
+
+@Service
 public class AlbumService {
-    
+
 }
