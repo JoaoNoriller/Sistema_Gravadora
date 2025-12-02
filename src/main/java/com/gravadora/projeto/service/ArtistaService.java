@@ -16,11 +16,10 @@ public class ArtistaService {
         this.artistaRepository = artistaRepository;
     }
 
-    // ==========================
-    // SALVAR (com validação)
+    //SALVAR (com validação)
     public Artista salvar(Artista artista) {
 
-        // Regra: Nome do artista deve ser único
+        //Regra: Nome do artista deve ser único
         List<Artista> artistasComMesmoNome = artistaRepository.findByNome(artista.getDcNome());
 
         if (!artistasComMesmoNome.isEmpty()) {
@@ -30,23 +29,23 @@ public class ArtistaService {
         return artistaRepository.save(artista);
     }
 
-    // LISTAR TODOS
+    //LISTAR TODOS
     public List<Artista> listarTodos() {
         return artistaRepository.findAll();
     }
 
-    // BUSCAR POR ID
+    //BUSCAR POR ID
     public Artista buscarPorId(Long id) {
         return artistaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Artista não encontrado."));
     }
 
-    // EXCLUIR POR ID
+    //EXCLUIR POR ID
     public void excluir(Long id) {
         artistaRepository.deleteById(id);
     }
 
-    // EXCLUIR TODOS
+    //EXCLUIR TODOS
     public void excluirTodos() {
         artistaRepository.deleteAll();
     }

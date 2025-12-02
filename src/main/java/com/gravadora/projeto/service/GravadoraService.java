@@ -16,28 +16,28 @@ public class GravadoraService {
         this.gravadoraRepository = gravadoraRepository;
     }
 
-    // SALVAR
+    //SALVAR
     public Gravadora salvar(Gravadora gravadora) {
         return gravadoraRepository.save(gravadora);
     }
 
-    // LISTAR
+    //LISTAR
     public List<Gravadora> listarTodos() {
         return gravadoraRepository.findAll();
     }
 
-    // BUSCAR POR ID
+    //BUSCAR POR ID
     public Gravadora buscarPorId(Long id) {
         return gravadoraRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Gravadora não encontrada."));
     }
 
-    // EXCLUIR POR ID
+    //EXCLUIR POR ID
     public void excluir(Long id) {
         gravadoraRepository.deleteById(id);
     }
 
-    // EXCLUIR TODOS
+    //EXCLUIR TODOS
     public void excluirTodos() {
         gravadoraRepository.deleteAll();
     }
