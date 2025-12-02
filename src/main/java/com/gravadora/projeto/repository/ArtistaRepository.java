@@ -8,10 +8,13 @@ import com.gravadora.projeto.model.Artista;
 
 public interface ArtistaRepository extends JpaRepository<Artista, Long> {
 
-    // 🔍 Consulta 1: Buscar artistas por nacionalidade
+    //Consulta 1: Buscar artistas por nacionalidade
     List<Artista> findByDcNaconalidade(String dcNaconalidade);
 
-    // 🔍 Consulta 2: Buscar artistas por gênero musical
+    //Consulta 2: Buscar artistas por gênero musical
     List<Artista> findByDcGeneroMusical(String dcGeneroMusical);
+
+    //Consulta 3: Buscar artistas por nome (igual)
+    List<Artista> findByNome(String nome);
 
 }
