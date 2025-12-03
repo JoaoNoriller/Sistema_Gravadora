@@ -11,7 +11,7 @@ public interface GravadoraRepository extends JpaRepository<Gravadora, Long> {
     //Consulta 1: Buscar gravadora pelo país
     List<Gravadora> findByDcPais(String dcPais);
 
-    //Consulta 2: Buscar gravadora pelo
-    List<Gravadora> findByDcNomeContaining(String nome);
+    //Consulta 2: Buscar gravadora pelo nome
+    List<Gravadora> findByDcNome(String nome);
 
 }
