@@ -10,18 +10,18 @@ import com.gravadora.projeto.model.Artista;
 
 public interface AlbumRepository extends JpaRepository<Album, Long> {
 
-    // Lista o artista dentro de álbum
+    // Lista de álbuns de um artista
     List<Album> findByArtista(Artista artista);
 
     // Buscar álbuns por status
     List<Album> findByDcStatus(String dcStatus);
 
-    // Buscar álbuns pelo título (contendo parte do nome)
-    List<Album> findByDcTitulo(String titulo);
+    // Buscar álbuns pelo título (contendo o nome)
+    List<Album> findByDcTituloContaining(String titulo);
 
-    // Verificar se um artista já possui um álbum com o mesmo título
-    List<Album> findByDcTituloEIdArtista(String dcTitulo, Long idArtista);
+    // Verificar se o artista já possui um álbum com o mesmo título
+    List<Album> findByDcTituloAndArtista_IdArtista(String dcTitulo, Long idArtista);
 
-    // Contar álbuns que um artista lançou em um determinado ano
-    int countByIdArtistaEDtAnoLancamento(Long idArtista, LocalDate dtAnoLancamento);
+    // Contar álbuns lançados por um artista em determinado ano
+    int countByArtista_IdArtistaAndDtAnoLancamento(Long idArtista, LocalDate dtAnoLancamento);
 }

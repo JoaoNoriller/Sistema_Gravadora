@@ -20,7 +20,7 @@ public class ArtistaService {
     public Artista salvar(Artista artista) {
 
         //Regra: Nome do artista deve ser único
-        List<Artista> artistasComMesmoNome = artistaRepository.findByNome(artista.getDcNome());
+        List<Artista> artistasComMesmoNome = artistaRepository.findByDcNome(artista.getDcNome());
 
         if (!artistasComMesmoNome.isEmpty()) {
             throw new RuntimeException("Já existe um artista cadastrado com esse nome.");

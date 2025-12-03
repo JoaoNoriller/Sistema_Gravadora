@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "Album")
+@Table(name = "album")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,7 +24,7 @@ public class Album {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idAlbum")
+    @Column(name = "id_album")
     private Long idAlbum;
 
     @Column(name = "dc_titulo", length = 150, nullable = false)
@@ -32,7 +33,7 @@ public class Album {
     @Column(name = "dt_ano_lancamento", nullable = false)
     private LocalDate dtAnoLancamento;
 
-    @Column(name = "dc_status", length = 45, nullable = true)
+    @Column(name = "dc_status", length = 45)
     private String dcStatus;
 
     @Column(name = "qtd_musica", nullable = false)
@@ -42,8 +43,10 @@ public class Album {
     private Time duracao;
 
     @ManyToOne
-    private Artista artista;   // Muitos álbuns → 1 artista
+    @JoinColumn(name = "id_artista", nullable = false)
+    private Artista artista;
 
     @ManyToOne
-    private Gravadora gravadora; // Muitos álbuns → 1 gravadora
+    @JoinColumn(name = "id_gravadora", nullable = false)
+    private Gravadora gravadora;
 }
