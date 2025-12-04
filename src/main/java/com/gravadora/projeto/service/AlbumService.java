@@ -65,9 +65,9 @@ public class AlbumService {
         }
 
         // ----- Regra 5: Duração total do álbum <= 2 horas (7200s) -----
-        if (album.getDuracao() != null) {
+        if (album.getTmduracao() != null) {
 
-            int duracaoSegundos = album.getDuracao()
+            int duracaoSegundos = album.getTmduracao()
                     .toLocalTime()
                     .toSecondOfDay();
 
