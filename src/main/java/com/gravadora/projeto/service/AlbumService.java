@@ -19,9 +19,9 @@ public class AlbumService {
     @Autowired
     private ArtistaRepository artistaRepository;
 
-    /**
-     * Salvar um álbum com validações de regras de negócio
-     */
+    
+    //Salvar um álbum com validações de regras de negócio
+     
     public Album salvarAlbum(Album album) {
 
         // ----- Validar ARTISTA -----

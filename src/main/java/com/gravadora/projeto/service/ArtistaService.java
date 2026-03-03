@@ -49,4 +49,5 @@ public class ArtistaService {
     public void excluirTodos() {
         artistaRepository.deleteAll();
     }
+
 }
