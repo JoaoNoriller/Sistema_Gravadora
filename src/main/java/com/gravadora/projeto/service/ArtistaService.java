@@ -17,16 +17,16 @@ public class ArtistaService {
     }
 
     //SALVAR (com validação)
-    public Artista salvar(Artista artista) {
+    public Artista salvar(Artista artistaDTO) {
 
         //Regra: Nome do artista deve ser único
-        List<Artista> artistasComMesmoNome = artistaRepository.findByDcNome(artista.getDcNome());
+        List<Artista> artistasComMesmoNome = artistaRepository.findByDcNome(artistaDTO.getDcNome());
 
         if (!artistasComMesmoNome.isEmpty()) {
             throw new RuntimeException("Já existe um artista cadastrado com esse nome.");
         }
 
-        return artistaRepository.save(artista);
+        return artistaRepository.save(artistaDTO);
     }
 
     //LISTAR TODOS

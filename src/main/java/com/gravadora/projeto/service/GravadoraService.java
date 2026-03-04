@@ -17,8 +17,8 @@ public class GravadoraService {
     }
 
     //SALVAR
-    public Gravadora salvar(Gravadora gravadora) {
-        return gravadoraRepository.save(gravadora);
+    public Gravadora salvar(Gravadora gravadoraDTO) {
+        return gravadoraRepository.save(gravadoraDTO);
     }
 
     //LISTAR

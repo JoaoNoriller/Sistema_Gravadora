@@ -51,7 +51,7 @@ class AlbumServiceTest {
         album.setIdAlbum(1L);
         album.setDcTitulo("Album Teste");
         album.setQtdMusica(6); // obrigatório > 5
-        album.setTmduracao(Time.valueOf(LocalTime.of(1, 0))); // 1h
+        album.setTmDuracao(Time.valueOf(LocalTime.of(1, 0))); // 1h
         album.setDtAnoLancamento(LocalDate.of(2024, 1, 1)); //Data 
         album.setArtista(artista);
     }

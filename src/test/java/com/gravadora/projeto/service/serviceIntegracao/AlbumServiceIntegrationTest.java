@@ -59,12 +59,12 @@ public class AlbumServiceIntegrationTest {
       album.setDcTitulo("Parachutes");
       album.setDtAnoLancamento(LocalDate.of(2000, 7, 10));
       album.setQtdMusica(10);
-      album.setTmduracao(Time.valueOf("01:30:00")); // horas minutos e segundos
+      album.setTmDuracao(Time.valueOf("01:30:00")); // horas minutos e segundos
       album.setArtista(artista);
       album.setGravadora(gravadora);
 
       // duração 1h
-      album.setTmduracao(Time.valueOf(LocalTime.of(1, 30)));
+      album.setTmDuracao(Time.valueOf(LocalTime.of(1, 30)));
 
       // Act
       Album salvo = albumService.salvarAlbum(album);
@@ -88,7 +88,7 @@ public class AlbumServiceIntegrationTest {
       album.setDcTitulo("Parachutes");
       album.setDtAnoLancamento(LocalDate.of(2000, 7, 10));
       album.setQtdMusica(4);
-      album.setTmduracao(Time.valueOf("01:30:00"));
+      album.setTmDuracao(Time.valueOf("01:30:00"));
       album.setArtista(artista);
       album.setGravadora(gravadora);
 
@@ -111,7 +111,7 @@ public class AlbumServiceIntegrationTest {
       album.setDcTitulo("AB");
       album.setDtAnoLancamento(LocalDate.of(2000, 7, 10));
       album.setQtdMusica(4);
-      album.setTmduracao(Time.valueOf("01:30:00"));
+      album.setTmDuracao(Time.valueOf("01:30:00"));
       album.setArtista(artista);
       album.setGravadora(gravadora);
 
@@ -134,7 +134,7 @@ public class AlbumServiceIntegrationTest {
       album.setDcTitulo("Parachutes");
       album.setDtAnoLancamento(LocalDate.of(2000, 7, 10));
       album.setQtdMusica(20);
-      album.setTmduracao(Time.valueOf("03:00:00"));
+      album.setTmDuracao(Time.valueOf("03:00:00"));
       album.setArtista(artista);
       album.setGravadora(gravadora);
 
@@ -158,7 +158,7 @@ public class AlbumServiceIntegrationTest {
       album1.setDcTitulo("Parachutes");
       album1.setDtAnoLancamento(LocalDate.of(2000, 7, 10));
       album1.setQtdMusica(10);
-      album1.setTmduracao(Time.valueOf("01:00:00"));
+      album1.setTmDuracao(Time.valueOf("01:00:00"));
       album1.setArtista(artista);
       album1.setGravadora(gravadora);
 
@@ -169,7 +169,7 @@ public class AlbumServiceIntegrationTest {
       album2.setDcTitulo("Parachutes"); // mesmo nome
       album2.setDtAnoLancamento(LocalDate.of(2000, 7, 10));
       album2.setQtdMusica(8);
-      album2.setTmduracao(Time.valueOf("01:10:00"));
+      album2.setTmDuracao(Time.valueOf("01:10:00"));
       album2.setArtista(artista);
       album2.setGravadora(gravadora);
 
@@ -203,7 +203,7 @@ public class AlbumServiceIntegrationTest {
          album.setDcTitulo("Parachutes" + i);
          album.setDtAnoLancamento(ano);
          album.setQtdMusica(10);
-         album.setTmduracao(Time.valueOf("01:00:00"));
+         album.setTmDuracao(Time.valueOf("01:00:00"));
          album.setArtista(artista);
          album.setGravadora(gravadora);
 
@@ -215,7 +215,7 @@ public class AlbumServiceIntegrationTest {
       album11.setDcTitulo("Parachutes11");
       album11.setDtAnoLancamento(ano);
       album11.setQtdMusica(10);
-      album11.setTmduracao(Time.valueOf("01:00:00"));
+      album11.setTmDuracao(Time.valueOf("01:00:00"));
       album11.setArtista(artista);
       album11.setGravadora(gravadora);
 

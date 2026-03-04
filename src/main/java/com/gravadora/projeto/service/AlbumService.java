@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.gravadora.projeto.dto.AlbumDTO;
 import com.gravadora.projeto.model.Album;
 import com.gravadora.projeto.model.Artista;
 import com.gravadora.projeto.repository.AlbumRepository;
@@ -19,13 +20,15 @@ public class AlbumService {
     @Autowired
     private ArtistaRepository artistaRepository;
 
-    
+    @Autowired
+    private ArtistaService artistaService;
+
     //Salvar um álbum com validações de regras de negócio
      
-    public Album salvarAlbum(Album album) {
+    public Album salvarAlbum(AlbumDTO albumDTO) {
 
         // ----- Validar ARTISTA -----
-        Artista artista = album.getArtista();
+        Artista artista = artistaService.buscarPorId(albumDTO.idArtista());
 
         if (artista == null || artista.getIdArtista() == null) {
             throw new RuntimeException("O álbum deve estar vinculado a um artista válido.");
@@ -35,20 +38,20 @@ public class AlbumService {
                 .orElseThrow(() -> new RuntimeException("Artista não encontrado."));
 
         // ----- Regra 1: Album precisa ter mais de 5 músicas -----
-        if (album.getQtdMusica() <= 5) {
+        if (albumDTO.qtdMusica() <= 5) {
             throw new RuntimeException("O álbum deve ter mais de 5 músicas.");
         }
 
         // ----- Regra 2: Título deve ter ao menos 3 caracteres -----
-        if (album.getDcTitulo() == null || album.getDcTitulo().trim().length() < 3) {
+        if (albumDTO.dcTitulo() == null || albumDTO.dcTitulo().trim().length() < 3) {
             throw new RuntimeException("O título do álbum deve ter no mínimo 3 caracteres.");
         }
 
         // ----- Regra 3: Título único por artista -----
         boolean tituloExiste = albumRepository
-                .findByDcTituloAndArtista_IdArtista(album.getDcTitulo(), artista.getIdArtista())
+                .findByDcTituloAndArtista_IdArtista(albumDTO.dcTitulo(), artista.getIdArtista())
                 .stream()
-                .anyMatch(a -> !a.getIdAlbum().equals(album.getIdAlbum())); // evita conflito ao editar
+                .anyMatch(a -> !a.getIdAlbum().equals(albumDTO.idAlbum())); // evita conflito ao editar
 
         if (tituloExiste) {
             throw new RuntimeException("Este artista já possui um álbum com esse título.");
@@ -57,7 +60,7 @@ public class AlbumService {
         // ----- Regra 4: Máximo 10 álbuns por ano -----
         int totalAno = albumRepository.countByArtista_IdArtistaAndDtAnoLancamento(
                 artista.getIdArtista(),
-                album.getDtAnoLancamento()
+                albumDTO.dtAnoLancamento()
         );
 
         if (totalAno >= 10) {
@@ -65,9 +68,9 @@ public class AlbumService {
         }
 
         // ----- Regra 5: Duração total do álbum <= 2 horas (7200s) -----
-        if (album.getTmduracao() != null) {
+        if (albumDTO.tmDuracao() != null) {
 
-            int duracaoSegundos = album.getTmduracao()
+            int duracaoSegundos = albumDTO.tmDuracao()
                     .toLocalTime()
                     .toSecondOfDay();
 
@@ -75,7 +78,15 @@ public class AlbumService {
                 throw new RuntimeException("A duração total do álbum não pode ultrapassar 2 horas.");
             }
         }
-
+        
+        Album album = new Album();
+        album.setArtista(artista);
+        album.setDcTitulo(albumDTO.dcTitulo());
+        album.setDtAnoLancamento(albumDTO.dtAnoLancamento());
+        album.setQtdMusica(albumDTO.qtdMusica());
+        album.setTmDuracao(albumDTO.tmDuracao());
+        album.setArtista(albumDTO.idArtista());
+    
         // ----- Salvar -----
         return albumRepository.save(album);
     }

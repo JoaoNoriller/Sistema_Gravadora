@@ -3,7 +3,6 @@ package com.gravadora.projeto.model;
 import java.sql.Time;
 import java.time.LocalDate;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -41,7 +40,7 @@ public class Album {
     private int qtdMusica;
 
     @Column(name = "tm_tmduracao", nullable = false)
-    private Time tmduracao;
+    private Time tmDuracao;
 
     @ManyToOne
     @JoinColumn(name = "id_artista", nullable = false)
