@@ -20,10 +20,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+
+import com.gravadora.projeto.dto.AlbumDTO;
 import com.gravadora.projeto.model.Album;
 import com.gravadora.projeto.model.Artista;
+import com.gravadora.projeto.model.Gravadora;
 import com.gravadora.projeto.repository.AlbumRepository;
 import com.gravadora.projeto.repository.ArtistaRepository;
+import com.gravadora.projeto.repository.GravadoraRepository;
 import com.gravadora.projeto.service.AlbumService;
 
 @ExtendWith(MockitoExtension.class) // Habilita o Mockito para os testes
@@ -35,25 +39,29 @@ class AlbumServiceTest {
     @Mock
     private ArtistaRepository artistaRepository; // Cria um repositório falso de artista
 
+    @Mock
+    private GravadoraRepository gravadoraRepository; // Cria um repositório falso de gravadora
+
     @InjectMocks
     private AlbumService albumService; // Cria instância real do service usando os repositórios falsos
 
-    private Album album;
+    private AlbumDTO albumDTO;
     private Artista artista;
+    private Gravadora gravadora;
 
     @BeforeEach // Roda antes de cada teste
     void setup() {
-        artista = new Artista(); // abm e art Mockado//
+        artista = new Artista(); //Mockado
         artista.setIdArtista(1L);
         artista.setDcNome("Artista Teste");
 
-        album = new Album();
-        album.setIdAlbum(1L);
-        album.setDcTitulo("Album Teste");
-        album.setQtdMusica(6); // obrigatório > 5
-        album.setTmDuracao(Time.valueOf(LocalTime.of(1, 0))); // 1h
-        album.setDtAnoLancamento(LocalDate.of(2024, 1, 1)); //Data 
-        album.setArtista(artista);
+        gravadora = new Gravadora();
+        gravadora.setIdGravadora(1L);
+        gravadora.setDcNome("Gravadora Teste");
+
+        albumDTO = new AlbumDTO(1L, "Album Teste", 
+        LocalDate.of(2024, 1, 1), 6, 
+        Time.valueOf(LocalTime.of(1, 0)), artista.getIdArtista(), gravadora.getIdGravadora());
     }
 
     // Cenário 1 — cadastrar álbum com sucesso
@@ -61,14 +69,21 @@ class AlbumServiceTest {
     void deveCadastrarAlbumComSucesso() {
 
         when(artistaRepository.findById(1L)).thenReturn(Optional.of(artista)); //artista existente no banco
-        when(albumRepository.countByArtista_IdArtistaAndDtAnoLancamento(1L, album.getDtAnoLancamento())) //validação — artista ainda não tem álbum neste ano
+        when(albumRepository.countByArtista_IdArtistaAndDtAnoLancamento(1L, albumDTO.dtAnoLancamento())) //validação — artista ainda não tem álbum neste ano
                 .thenReturn(0); 
         when(albumRepository.findByDcTituloAndArtista_IdArtista("Album Teste", 1L)) //validação — título não existe repetido para o mesmo artista
                 .thenReturn(Collections.emptyList()); // título liberado
 
+        Album album = new Album();
+        album.setArtista(artista);
+        album.setDcTitulo(albumDTO.dcTitulo());
+        album.setDtAnoLancamento(albumDTO.dtAnoLancamento());
+        album.setQtdMusica(albumDTO.qtdMusica());
+        album.setTmDuracao(albumDTO.tmDuracao());
+
         when(albumRepository.save(album)).thenReturn(album); //salva
 
-        Album salvo = albumService.salvarAlbum(album);
+        Album salvo = albumService.salvarAlbum(albumDTO);
 
         assertNotNull(salvo);
         assertEquals("Album Teste", salvo.getDcTitulo()); // Confirma título
@@ -102,17 +117,19 @@ class AlbumServiceTest {
     @Test
     void deveAtualizarAlbumComSucesso() {
 
-        album.setDcTitulo("Novo Título");
+        albumDTO = new AlbumDTO(1L, "Album Teste", 
+        LocalDate.of(2024, 1, 1), 6, 
+        Time.valueOf(LocalTime.of(1, 0)), artista.getIdArtista(), gravadora.getIdGravadora());
         
         when(artistaRepository.findById(1L)).thenReturn(Optional.of(artista)); // Regras de validação do service
-        when(albumRepository.countByArtista_IdArtistaAndDtAnoLancamento(1L, album.getDtAnoLancamento()))
+        when(albumRepository.countByArtista_IdArtistaAndDtAnoLancamento(1L, albumDTO.dtAnoLancamento()))
                 .thenReturn(0);
         when(albumRepository.findByDcTituloAndArtista_IdArtista("Novo Título", 1L))
                 .thenReturn(Collections.emptyList());
 
         when(albumRepository.save(album)).thenReturn(album); //Simula salvamento
 
-        Album atualizado = albumService.salvarAlbum(album);
+        Album atualizado = albumService.salvarAlbum(albumDTO);
 
         assertEquals("Novo Título", atualizado.getDcTitulo()); // Confirma atualização
     }

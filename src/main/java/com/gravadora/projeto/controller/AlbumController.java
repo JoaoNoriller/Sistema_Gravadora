@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gravadora.projeto.dto.AlbumDTO;
 import com.gravadora.projeto.model.Album;
 import com.gravadora.projeto.service.AlbumService;
 
@@ -26,9 +27,9 @@ public class AlbumController {
 
     //CRIAR ÁLBUM
     @PostMapping
-    public ResponseEntity<?> criarAlbum(@RequestBody Album album) {
+    public ResponseEntity<?> criarAlbum(@RequestBody AlbumDTO albumDTO) {
         try {
-            Album novoAlbum = albumService.salvarAlbum(album);
+            Album novoAlbum = albumService.salvarAlbum(albumDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(novoAlbum);
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
@@ -55,11 +56,20 @@ public class AlbumController {
  
     //ATUALIZAR ÁLBUM
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Album album) {
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody AlbumDTO albumDTO) {
         try {
-            // permite que o service trate as validações
-            album.setIdAlbum(id);
-            Album atualizado = albumService.salvarAlbum(album);
+            
+             // cria novo DTO com id para update // permite que o service trate as validações
+            AlbumDTO dtoAtualizado = new AlbumDTO(
+                id,
+                albumDTO.dcTitulo(),
+                albumDTO.dtAnoLancamento(),
+                albumDTO.qtdMusica(),
+                albumDTO.tmDuracao(),
+                albumDTO.idArtista(),
+                albumDTO.idGravadora()
+            );
+            Album atualizado = albumService.salvarAlbum(albumDTO);
             return ResponseEntity.ok(atualizado);
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());

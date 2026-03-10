@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.gravadora.projeto.dto.ArtistaDTO;
 import com.gravadora.projeto.model.Artista;
 import com.gravadora.projeto.repository.ArtistaRepository;
 
@@ -17,16 +18,20 @@ public class ArtistaService {
     }
 
     //SALVAR (com validação)
-    public Artista salvar(Artista artistaDTO) {
+    public Artista salvar(ArtistaDTO artistaDTO) {
 
         //Regra: Nome do artista deve ser único
-        List<Artista> artistasComMesmoNome = artistaRepository.findByDcNome(artistaDTO.getDcNome());
+        List<Artista> artistasComMesmoNome = artistaRepository.findByDcNome(artistaDTO.dcNome());
 
         if (!artistasComMesmoNome.isEmpty()) {
             throw new RuntimeException("Já existe um artista cadastrado com esse nome.");
         }
 
-        return artistaRepository.save(artistaDTO);
+        // Converter DTO -> Entidade
+        Artista artista = new Artista();
+        artista.setDcNome(artistaDTO.dcNome());
+
+        return artistaRepository.save(artista);
     }
 
     //LISTAR TODOS

@@ -85,7 +85,6 @@ public class AlbumService {
         album.setDtAnoLancamento(albumDTO.dtAnoLancamento());
         album.setQtdMusica(albumDTO.qtdMusica());
         album.setTmDuracao(albumDTO.tmDuracao());
-        album.setArtista(albumDTO.idArtista());
     
         // ----- Salvar -----
         return albumRepository.save(album);

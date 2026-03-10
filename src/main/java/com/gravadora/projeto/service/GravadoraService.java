@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.gravadora.projeto.dto.GravadoraDTO;
 import com.gravadora.projeto.model.Gravadora;
 import com.gravadora.projeto.repository.GravadoraRepository;
 
@@ -17,8 +18,17 @@ public class GravadoraService {
     }
 
     //SALVAR
-    public Gravadora salvar(Gravadora gravadoraDTO) {
-        return gravadoraRepository.save(gravadoraDTO);
+    public Gravadora salvar(GravadoraDTO gravadoraDTO) {
+
+        Gravadora gravadora = new Gravadora();
+        gravadora.setDcNome(gravadoraDTO.dcNome());
+        gravadora.setDcEndereco(gravadoraDTO.dcEndereco());
+        gravadora.setDcTelefone(gravadoraDTO.dcTelefone());
+        gravadora.setDcPais(gravadoraDTO.dcPais());
+        gravadora.setDtDataFundacao(gravadoraDTO.dtDataFundacao());
+        gravadora.setDcCnpj(gravadoraDTO.dcCnpj());
+
+        return gravadoraRepository.save(gravadora);
     }
 
     //LISTAR

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gravadora.projeto.dto.GravadoraDTO;
 import com.gravadora.projeto.model.Gravadora;
 import com.gravadora.projeto.service.GravadoraService;
 
@@ -26,9 +27,9 @@ public class GravadoraController {
 
     //CRIAR GRAVADORA
     @PostMapping
-    public ResponseEntity<?> criarGravadora(@RequestBody Gravadora gravadora) {
+    public ResponseEntity<?> criarGravadora(@RequestBody GravadoraDTO gravadoraDTO) {
         try {
-            Gravadora nova = gravadoraService.salvar(gravadora);
+            Gravadora nova = gravadoraService.salvar(gravadoraDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(nova);
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
@@ -54,10 +55,16 @@ public class GravadoraController {
 
     //ATUALIZAR GRAVADORA
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Gravadora gravadora) {
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody GravadoraDTO gravadoraDTO) {
         try {
-            gravadora.setIdGravadora(id);
-            Gravadora atualizada = gravadoraService.salvar(gravadora);
+            Gravadora gravadoraExistente = gravadoraService.buscarPorId(id);
+            gravadoraExistente.setDcNome(gravadoraDTO.dcNome());
+            gravadoraExistente.setDcEndereco(gravadoraDTO.dcEndereco());
+            gravadoraExistente.setDcTelefone(gravadoraDTO.dcTelefone());
+            gravadoraExistente.setDcPais(gravadoraDTO.dcPais());
+            gravadoraExistente.setDtDataFundacao(gravadoraDTO.dtDataFundacao());
+            gravadoraExistente.setDcCnpj(gravadoraDTO.dcCnpj());
+            Gravadora atualizada = gravadoraService.salvar(gravadoraDTO);
             return ResponseEntity.ok(atualizada);
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());

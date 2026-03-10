@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.gravadora.projeto.dto.ArtistaDTO;
 import com.gravadora.projeto.model.Artista;
 import com.gravadora.projeto.service.ArtistaService;
 
@@ -26,9 +27,9 @@ public class ArtistaController {
 
     //CRIAR ARTISTA
     @PostMapping
-    public ResponseEntity<?> criarArtista(@RequestBody Artista artista) {
+    public ResponseEntity<?> criarArtista(@RequestBody ArtistaDTO artistaDTO) {
         try {
-            Artista novoArtista = artistaService.salvar(artista);
+            Artista novoArtista = artistaService.salvar(artistaDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(novoArtista);
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
@@ -54,10 +55,11 @@ public class ArtistaController {
 
     //ATUALIZAR
     @PutMapping("/{id}")
-    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody Artista artista) {
+    public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody ArtistaDTO artistaDTO) {
         try {
-            artista.setIdArtista(id);
-            Artista atualizado = artistaService.salvar(artista);
+            Artista artistaExistente = artistaService.buscarPorId(id);
+            artistaExistente.setDcNome(artistaDTO.dcNome());
+            Artista atualizado = artistaService.salvar(artistaDTO);
             return ResponseEntity.ok(atualizado);
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
