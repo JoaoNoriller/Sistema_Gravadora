@@ -1,5 +1,6 @@
 package com.gravadora.projeto.service.serviceUnitario;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -12,11 +13,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.gravadora.projeto.dto.ArtistaDTO;
 import com.gravadora.projeto.model.Artista;
 import com.gravadora.projeto.repository.ArtistaRepository;
 import com.gravadora.projeto.service.ArtistaService;
@@ -31,24 +34,32 @@ class ArtistaServiceTest {
     private ArtistaService artistaService;  // Cria instância real do service usando os repositórios falsos
 
     private Artista artista;
+    private ArtistaDTO artistaDTO;
 
     @BeforeEach // Roda antes de cada teste
     void setup() { 
         artista = new Artista();
         artista.setIdArtista(1L);
-        artista.setDcNome("João Victor");
+        artista.setDcNome("Xuxa");
+        artista.setDtNascimento(LocalDate.of(1963, 3, 27));
+        artista.setDcNacionalidade("Brasil");
+        artista.setDcGeneroMusical("Pop");
+
+        artistaDTO = new ArtistaDTO("Xuxa", "Barra da Tijuca", 
+        LocalDate.of(1963, 3, 27), "Brasil", "Pop");
     }
 
     // Cenário 1 — Cadastro com sucesso
     @Test
     void deveCadastrarArtistaComSucesso() {
-        when(artistaRepository.findByDcNome("João Victor")).thenReturn(Collections.emptyList()); //verifica se não existe nenhum artista com esse nome
-        when(artistaRepository.save(artista)).thenReturn(artista); //Simula que o save retorna exatamente o artista enviado
 
-        Artista salvo = artistaService.salvar(artista);
+        when(artistaRepository.findByDcNome("Xuxa")).thenReturn(Collections.emptyList()); //verifica se não existe nenhum artista com esse nome
+        when(artistaRepository.save(any(Artista.class))).thenReturn(artista); //Simula que o save retorna exatamente o artista enviado
+        
+        Artista salvo = artistaService.salvar(artistaDTO);
 
-        assertNotNull(salvo); //Validações
-        assertEquals("João Victor", salvo.getDcNome());
+        assertNotNull(salvo);
+        assertEquals("Xuxa", salvo.getDcNome());
     }
 
     // Cenário 2 — Buscar artista inexistente
@@ -66,14 +77,18 @@ class ArtistaServiceTest {
     // Cenário 4 – Atualizar nome do artista
     @Test
     void deveAtualizarNomeDoArtista() {
-        Artista atualizado = new Artista(); //Cria artista atualizado
+        
+        ArtistaDTO atualizadoDTO = new ArtistaDTO("Nome Atualizado", "Barra da Tijuca",
+        LocalDate.of(1963, 3, 27), "Brasil", "Pop");
+
+        Artista atualizado = new Artista();
         atualizado.setIdArtista(1L);
         atualizado.setDcNome("Nome Atualizado");
 
-        when(artistaRepository.save(atualizado)).thenReturn(atualizado); //Simula que o repositório vai salvar e devolver o atualizado
-        when(artistaRepository.findByDcNome("Nome Atualizado")).thenReturn(Collections.emptyList()); //Simula que não há outro artista com o novo nome
+        when(artistaRepository.findByDcNome("Nome Atualizado")).thenReturn(Collections.emptyList()); //Simula que o repositório vai salvar e devolver o atualizado
+        when(artistaRepository.save(any(Artista.class))).thenReturn(atualizado); //Simula que não há outro artista com o novo nome
 
-        Artista retorno = artistaService.salvar(atualizado);
+        Artista retorno = artistaService.salvar(atualizadoDTO);
 
         assertEquals("Nome Atualizado", retorno.getDcNome()); //Validação
     }

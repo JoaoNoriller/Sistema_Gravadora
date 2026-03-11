@@ -1,5 +1,6 @@
 package com.gravadora.projeto.service.serviceUnitario;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -8,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import static org.mockito.Mockito.doNothing;
@@ -16,6 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.gravadora.projeto.dto.GravadoraDTO;
 import com.gravadora.projeto.model.Gravadora;
 import com.gravadora.projeto.repository.GravadoraRepository;
 import com.gravadora.projeto.service.GravadoraService;
@@ -30,25 +33,37 @@ class GravadoraServiceTest {
     private GravadoraService gravadoraService;
 
     private Gravadora gravadora;
+    private GravadoraDTO gravadoraDTO;
 
     @BeforeEach // Executado antes de cada teste para inicializar uma gravadora padrão
     void setup() {
-        
+
         gravadora = new Gravadora();
         gravadora.setIdGravadora(1L);
         gravadora.setDcNome("Gravadora Teste");
         gravadora.setDcEndereco("Rua ABC");
+
+        gravadoraDTO = new GravadoraDTO("Gravadora Teste", "Rua ABC", "47999999999", "Brasil",
+                LocalDate.of(2000, 1, 1), "12345678000199");
+
     }
 
     @Test
-    void deveCadastrarGravadoraComSucesso() {         // Simula o comportamento do save, retornando a mesma gravadora
-        when(gravadoraRepository.save(gravadora)).thenReturn(gravadora);
+    void deveCadastrarGravadoraComSucesso() {
 
-        Gravadora salvo = gravadoraService.salvar(gravadora); // chama o service
-        //validações
-        assertNotNull(salvo); // verifica se não é nulo
-        assertEquals("Gravadora Teste", salvo.getDcNome());  // Nome foi mantido
-        verify(gravadoraRepository, times(1)).save(gravadora); // Confirma que save foi chamado 1 vez
+        // Simula o comportamento do save do repository
+        when(gravadoraRepository.save(any(Gravadora.class)))
+                .thenReturn(gravadora);
+
+        // Executa o método do service
+        Gravadora salvo = gravadoraService.salvar(gravadoraDTO);
+
+        // Validações
+        assertNotNull(salvo);
+        assertEquals("Gravadora Teste", salvo.getDcNome());
+
+        // Verifica se o save foi chamado 1 vez
+        verify(gravadoraRepository, times(1)).save(any(Gravadora.class));
     }
 
     @Test
@@ -72,16 +87,26 @@ class GravadoraServiceTest {
     }
 
     @Test
-    void deveAtualizarGravadora() {    //Atualiza nome da Gravadora
-        gravadora.setDcNome("Nova Gravadora"); 
-        when(gravadoraRepository.save(gravadora)).thenReturn(gravadora); // retorna a gravadora atualizada
+    void deveAtualizarGravadora() { 
+        
+        // Atualiza nome da Gravadora
+        GravadoraDTO dtoAtualizado = new GravadoraDTO("Nova Gravadora", "Rua ABC", "47999999999", "Brasil",
+                LocalDate.of(2000, 1, 1), "12345678000100");
 
-        Gravadora atualizado = gravadoraService.salvar(gravadora);
-        assertEquals("Nova Gravadora", atualizado.getDcNome()); // gravadora salva com o novo nome
+        Gravadora gravadoraAtualizada = new Gravadora();
+        gravadoraAtualizada.setIdGravadora(1L);
+        gravadoraAtualizada.setDcNome("Nova Gravadora");
+
+        when(gravadoraRepository.save(any(Gravadora.class)))
+                .thenReturn(gravadoraAtualizada);
+
+        Gravadora atualizado = gravadoraService.salvar(dtoAtualizado);
+
+        assertEquals("Nova Gravadora", atualizado.getDcNome());
     }
 
     @Test
-    void deveExcluirGravadora() { // simula excluir 
+    void deveExcluirGravadora() { // simula excluir
         doNothing().when(gravadoraRepository).deleteById(1L);
 
         gravadoraService.excluir(1L); // chama o método
