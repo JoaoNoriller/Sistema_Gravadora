@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import com.gravadora.projeto.dto.AlbumDTO;
 import com.gravadora.projeto.model.Album;
 import com.gravadora.projeto.model.Artista;
 import com.gravadora.projeto.model.Gravadora;
-import com.gravadora.projeto.repository.AlbumRepository;
 import com.gravadora.projeto.repository.ArtistaRepository;
 import com.gravadora.projeto.repository.GravadoraRepository;
 import com.gravadora.projeto.service.AlbumService;
@@ -25,151 +25,212 @@ import jakarta.transaction.Transactional;
 @Transactional
 public class AlbumServiceIntegrationTest {
 
-   @Autowired
-   private AlbumService albumService;
+    @Autowired
+    private AlbumService albumService;
 
-   @Autowired
-   private AlbumRepository albumRepository;
+    @Autowired
+    private ArtistaRepository artistaRepository;
 
-   @Autowired
-   private ArtistaRepository artistaRepository;
+    @Autowired
+    private GravadoraRepository gravadoraRepository;
 
-   @Autowired
-   private GravadoraRepository gravadoraRepository;
+    private AlbumDTO albumDTOValido;
+    private Artista artista;
+    private Gravadora gravadora;
 
-   
-   private AlbumDTO albumDTO;
-   private Artista artista;
-   private Gravadora gravadora;
-   // private Gravadora gravadora;
+    @BeforeEach
+    void setup() {
+        artista = new Artista();
+        artista.setDcNome("Coldplay");
+        artista = artistaRepository.save(artista);
 
-   @BeforeEach
-   void setup() {
+        gravadora = new Gravadora();
+        gravadora.setDcNome("Records");
+        gravadora.setDcEndereco("Rua das Flores, 100");
+        gravadora.setDcTelefone("11999999999");
+        gravadora.setDcPais("Brasil");
+        gravadora.setDtDataFundacao(LocalDate.of(2000, 1, 1));
+        gravadora.setDcCnpj("12345678000199");
+        gravadora = gravadoraRepository.save(gravadora);
 
-      artista = new Artista();
-      artista.setDcNome("Coldplay");
-      artista = artistaRepository.save(artista);
+        // DTO base válido — passa em todas as regras
+        albumDTOValido = new AlbumDTO(
+                null,
+                "Parachutes",
+                LocalDate.of(2000, 7, 10),
+                null,                        // status é gerado automaticamente pelo service
+                10,
+                Time.valueOf("01:30:00"),
+                artista.getIdArtista(),
+                gravadora.getIdGravadora()
+        );
+    }
 
-      
-      gravadora = new Gravadora();
-      gravadora.setDcNome("Records");
-      gravadora.setDcEndereco("Rua das Flores, 100");
-      gravadora.setDcTelefone("11999999999"); gravadora.setDcPais("Brasil");
-      gravadora.setDtDataFundacao(LocalDate.of(2000, 1, 1));
-      gravadora.setDcCnpj("12345678000199"); gravadoraRepository.save(gravadora);
-      
+    // ---------------------------------------------------------------
+    // SALVAR COM SUCESSO
+    // ---------------------------------------------------------------
 
-      /*
-       * Album album = new Album();
-       * album.setDcTitulo("Parachutes");
-       * album.setDtAnoLancamento(LocalDate.of(2000, 7, 10));
-       * album.setQtdMusica(10); album.setTmDuracao(Time.valueOf("01:30:00"));
-       */
+    @Test
+    public void deveSalvarAlbumComSucesso() {
+        Album salvo = albumService.salvarAlbum(albumDTOValido);
 
-       albumDTO = new AlbumDTO(1L, "Parachutes",
-            LocalDate.of(200, 7, 10), 6, Time.valueOf("01:30:00"), artista.getIdArtista(), gravadora.getIdGravadora());
+        assertNotNull(salvo.getIdAlbum());
+        assertEquals("Parachutes", salvo.getDcTitulo());
+        assertEquals("COMPLETO", salvo.getDcStatus()); // 10 músicas = COMPLETO
+    }
 
-   }
+    // ---------------------------------------------------------------
+    // REGRA 1 — quantidade de músicas deve ser > 5
+    // ---------------------------------------------------------------
 
-   @Test
-   public void deveSalvarAlbumComSucesso() {
+    @Test
+    public void naoDeveSalvarAlbumComMenosDe5Musicas() {
+        AlbumDTO dtoInvalido = new AlbumDTO(
+                null,
+                "Parachutes",
+                LocalDate.of(2000, 7, 10),
+                null,
+                5,                           // ← inválido (deve ser > 5)
+                Time.valueOf("01:30:00"),
+                artista.getIdArtista(),
+                gravadora.getIdGravadora()
+        );
 
-      Album salvo = albumService.salvarAlbum(albumDTO);
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> albumService.salvarAlbum(dtoInvalido));
 
-      assertNotNull(salvo.getIdAlbum());
-      assertEquals("Parachutes", salvo.getDcTitulo());
-   }
-/* 
-   @Test
-   public void naoDeveSalvarAlbumComMenosDe5Musicas() {
+        assertEquals("O álbum deve ter mais de 5 músicas.", ex.getMessage());
+    }
 
-      AlbumDTO albumDTO = new AlbumDTO(1L, "Parachutes",
-            LocalDate.of(200, 7, 10), 4, Time.valueOf("01:30:00"), 2L, 3L);
+    // ---------------------------------------------------------------
+    // REGRA 2 — título deve ter ao menos 3 caracteres
+    // ---------------------------------------------------------------
 
-      RuntimeException ex = assertThrows(RuntimeException.class,
-            () -> albumService.salvarAlbum(album));
-      assertEquals("O álbum deve ter mais de 5 músicas.", ex.getMessage());
-   }
+    @Test
+    public void naoDeveSalvarTituloInvalido() {
+        AlbumDTO dtoInvalido = new AlbumDTO(
+                null,
+                "AB",                        // ← inválido (< 3 chars)
+                LocalDate.of(2000, 7, 10),
+                null,
+                10,
+                Time.valueOf("01:30:00"),
+                artista.getIdArtista(),
+                gravadora.getIdGravadora()
+        );
 
-   @Test
-   public void naoDeveSalvarTituloInvalido() { // Menos de 3 caracteres
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> albumService.salvarAlbum(dtoInvalido));
 
-      RuntimeException ex = assertThrows(RuntimeException.class,
-            () -> albumService.salvarAlbum(album));
-      assertEquals("O título do álbum deve ter no mínimo 3 caracteres.", ex.getMessage());
-   }
+        assertEquals("O título do álbum deve ter no mínimo 3 caracteres.", ex.getMessage());
+    }
 
-   @Test
-   public void naoDeveSalvarComDuracaoMaiorQue2Horas() {
+    // ---------------------------------------------------------------
+    // REGRA 5 — duração máxima de 2 horas
+    // ---------------------------------------------------------------
 
-      RuntimeException ex = assertThrows(RuntimeException.class,
-            () -> albumService.salvarAlbum(album));
-      assertEquals("A duração total do álbum não pode ultrapassar 2 horas.", ex.getMessage());
-   }
+    @Test
+    public void naoDeveSalvarComDuracaoMaiorQue2Horas() {
+        AlbumDTO dtoInvalido = new AlbumDTO(
+                null,
+                "Parachutes",
+                LocalDate.of(2000, 7, 10),
+                null,
+                10,
+                Time.valueOf("02:01:00"),    // ← inválido (> 7200s)
+                artista.getIdArtista(),
+                gravadora.getIdGravadora()
+        );
 
-   @Test
-   public void naoDeveSalvarAlbumComTituloDuplicadoParaMesmoArtista() {
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> albumService.salvarAlbum(dtoInvalido));
 
-      albumService.salvarAlbum(album1);
+        assertEquals("A duração total do álbum não pode ultrapassar 2 horas.", ex.getMessage());
+    }
 
-      // Segundo álbum com mesmo título
-      Album album2 = new Album();
-      album2.setDcTitulo("Parachutes"); // mesmo nome
-      album2.setDtAnoLancamento(LocalDate.of(2000, 7, 10));
-      album2.setQtdMusica(8);
-      album2.setTmDuracao(Time.valueOf("01:10:00"));
-      album2.setArtista(artista);
-      album2.setGravadora(gravadora);
+    // ---------------------------------------------------------------
+    // REGRA 3 — título único por artista
+    // ---------------------------------------------------------------
 
-      RuntimeException ex = assertThrows(RuntimeException.class,
-            () -> albumService.salvarAlbum(album2));
-      assertEquals("Este artista já possui um álbum com esse título.", ex.getMessage());
+    @Test
+    public void naoDeveSalvarAlbumComTituloDuplicadoParaMesmoArtista() {
+        albumService.salvarAlbum(albumDTOValido);
 
-   }
+        AlbumDTO dtoDuplicado = new AlbumDTO(
+                null,
+                "Parachutes",               // ← mesmo título
+                LocalDate.of(2001, 1, 1),
+                null,
+                10,
+                Time.valueOf("01:00:00"),
+                artista.getIdArtista(),     // ← mesmo artista
+                gravadora.getIdGravadora()
+        );
 
-   @Test
-   public void naoDevePermitirMaisDe10AlbunsNoMesmoAno() {
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> albumService.salvarAlbum(dtoDuplicado));
 
-      Artista artista = new Artista();
-      artista.setDcNome("Coldplay");
-      artista = artistaRepository.save(artista);
+        assertEquals("Este artista já possui um álbum com esse título.", ex.getMessage());
+    }
 
-      Gravadora gravadora = new Gravadora();
-      gravadora.setDcNome("Records");
-      gravadora.setDcEndereco("Rua das Flores, 100");
-      gravadora.setDcTelefone("11999999999");
-      gravadora.setDcPais("Brasil");
-      gravadora.setDtDataFundacao(LocalDate.of(2000, 1, 1));
-      gravadora.setDcCnpj("12345678000199");
-      gravadoraRepository.save(gravadora);
+    // ---------------------------------------------------------------
+    // REGRA 4 — máximo 10 álbuns por ano por artista
+    // ---------------------------------------------------------------
 
-      LocalDate ano = LocalDate.now();
+    @Test
+    public void naoDeveSalvarMaisDe10AlbunsPorAnoParaMesmoArtista() {
+        LocalDate ano = LocalDate.of(2000, 1, 1);
 
-      // Salvar 10 álbuns válidos
-      for (int i = 1; i <= 10; i++) {
-         Album album = new Album();
-         album.setDcTitulo("Parachutes" + i);
-         album.setDtAnoLancamento(ano);
-         album.setQtdMusica(10);
-         album.setTmDuracao(Time.valueOf("01:00:00"));
-         album.setArtista(artista);
-         album.setGravadora(gravadora);
+        for (int i = 1; i <= 10; i++) {
+            AlbumDTO dto = new AlbumDTO(
+                    null,
+                    "Album " + i,
+                    ano,
+                    null,
+                    10,
+                    Time.valueOf("01:00:00"),
+                    artista.getIdArtista(),
+                    gravadora.getIdGravadora()
+            );
+            albumService.salvarAlbum(dto);
+        }
 
-         albumService.salvarAlbum(album);
+        AlbumDTO dto11 = new AlbumDTO(
+                null,
+                "Album 11",
+                ano,
+                null,
+                10,
+                Time.valueOf("01:00:00"),
+                artista.getIdArtista(),
+                gravadora.getIdGravadora()
+        );
 
-      }
+        RuntimeException ex = assertThrows(RuntimeException.class,
+                () -> albumService.salvarAlbum(dto11));
 
-      Album album11 = new Album();
-      album11.setDcTitulo("Parachutes11");
-      album11.setDtAnoLancamento(ano);
-      album11.setQtdMusica(10);
-      album11.setTmDuracao(Time.valueOf("01:00:00"));
-      album11.setArtista(artista);
-      album11.setGravadora(gravadora);
+        assertEquals("O artista já lançou o máximo de 10 álbuns neste ano.", ex.getMessage());
+    }
 
-      RuntimeException ex = assertThrows(RuntimeException.class,
-            () -> albumService.salvarAlbum(album11));
-      assertEquals("O artista já lançou o máximo de 10 álbuns neste ano.", ex.getMessage());
+    // ---------------------------------------------------------------
+    // STATUS — álbum com menos de 10 músicas deve ser INCOMPLETO
+    // ---------------------------------------------------------------
 
-   }*/
+    @Test
+    public void deveDefinirStatusIncompletoParaAlbumComMenosDe10Musicas() {
+        AlbumDTO dtoIncompleto = new AlbumDTO(
+                null,
+                "Ghost Stories",
+                LocalDate.of(2014, 5, 19),
+                null,
+                7,                           // ← entre 6 e 9 = INCOMPLETO
+                Time.valueOf("00:45:00"),
+                artista.getIdArtista(),
+                gravadora.getIdGravadora()
+        );
+
+        Album salvo = albumService.salvarAlbum(dtoIncompleto);
+
+        assertEquals("INCOMPLETO", salvo.getDcStatus());
+    }
 }

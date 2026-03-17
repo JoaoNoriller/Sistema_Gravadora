@@ -25,7 +25,7 @@ public class AlbumController {
     @Autowired
     private AlbumService albumService;
 
-    //CRIAR ÁLBUM
+    // CRIAR ÁLBUM
     @PostMapping
     public ResponseEntity<?> criarAlbum(@RequestBody AlbumDTO albumDTO) {
         try {
@@ -36,14 +36,13 @@ public class AlbumController {
         }
     }
 
-    //LISTAR TODOS
+    // LISTAR TODOS
     @GetMapping
     public ResponseEntity<List<Album>> listar() {
         return ResponseEntity.ok(albumService.listar());
     }
 
-
-    //BUSCAR POR ID
+    // BUSCAR POR ID
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
         try {
@@ -53,30 +52,30 @@ public class AlbumController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }
     }
- 
-    //ATUALIZAR ÁLBUM
+
+    // ATUALIZAR ÁLBUM
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody AlbumDTO albumDTO) {
         try {
-            
-             // cria novo DTO com id para update // permite que o service trate as validações
+            // Monta DTO com id da URL + dcStatus null (gerado automaticamente pelo service)
             AlbumDTO dtoAtualizado = new AlbumDTO(
-                id,
-                albumDTO.dcTitulo(),
-                albumDTO.dtAnoLancamento(),
-                albumDTO.qtdMusica(),
-                albumDTO.tmDuracao(),
-                albumDTO.idArtista(),
-                albumDTO.idGravadora()
+                    id,
+                    albumDTO.dcTitulo(),
+                    albumDTO.dtAnoLancamento(),
+                    null,                    // ← dcStatus gerado pelo service
+                    albumDTO.qtdMusica(),
+                    albumDTO.tmDuracao(),
+                    albumDTO.idArtista(),
+                    albumDTO.idGravadora()
             );
-            Album atualizado = albumService.salvarAlbum(albumDTO);
+            Album atualizado = albumService.salvarAlbum(dtoAtualizado); // ← dtoAtualizado, não albumDTO
             return ResponseEntity.ok(atualizado);
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
 
-    //DELETAR ÁLBUM
+    // DELETAR ÁLBUM
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletar(@PathVariable Long id) {
         try {

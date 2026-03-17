@@ -3,15 +3,15 @@ package com.gravadora.projeto.dto;
 import java.sql.Time;
 import java.time.LocalDate;
 
-
 public record AlbumDTO(
-    
-    long idAlbum,
+
+    Long idAlbum,
     String dcTitulo,
     LocalDate dtAnoLancamento,
-    int qtdMusica,
+    String dcStatus,     
+    Integer qtdMusica,
     Time tmDuracao,
-    long idArtista,
+    Long idArtista,
     Long idGravadora
 
 ) {}

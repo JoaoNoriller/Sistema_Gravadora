@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import com.gravadora.projeto.dto.AlbumDTO;
 import com.gravadora.projeto.model.Album;
 import com.gravadora.projeto.model.Artista;
+import com.gravadora.projeto.model.Gravadora;
 import com.gravadora.projeto.repository.AlbumRepository;
-import com.gravadora.projeto.repository.ArtistaRepository;
 
 @Service
 public class AlbumService {
@@ -18,24 +18,18 @@ public class AlbumService {
     private AlbumRepository albumRepository;
 
     @Autowired
-    private ArtistaRepository artistaRepository;
+    private ArtistaService artistaService;   // ← só service, sem repository
 
     @Autowired
-    private ArtistaService artistaService;
+    private GravadoraService gravadoraService; // ← só service, sem repository
 
-    //Salvar um álbum com validações de regras de negócio
-     
     public Album salvarAlbum(AlbumDTO albumDTO) {
 
-        // ----- Validar ARTISTA -----
+        // ----- Validar ARTISTA via service -----
         Artista artista = artistaService.buscarPorId(albumDTO.idArtista());
 
-        if (artista == null || artista.getIdArtista() == null) {
-            throw new RuntimeException("O álbum deve estar vinculado a um artista válido.");
-        }
-
-        artista = artistaRepository.findById(artista.getIdArtista())
-                .orElseThrow(() -> new RuntimeException("Artista não encontrado."));
+        // ----- Validar GRAVADORA via service -----
+        Gravadora gravadora = gravadoraService.buscarPorId(albumDTO.idGravadora());
 
         // ----- Regra 1: Album precisa ter mais de 5 músicas -----
         if (albumDTO.qtdMusica() <= 5) {
@@ -51,7 +45,7 @@ public class AlbumService {
         boolean tituloExiste = albumRepository
                 .findByDcTituloAndArtista_IdArtista(albumDTO.dcTitulo(), artista.getIdArtista())
                 .stream()
-                .anyMatch(a -> !a.getIdAlbum().equals(albumDTO.idAlbum())); // evita conflito ao editar
+                .anyMatch(a -> !a.getIdAlbum().equals(albumDTO.idAlbum()));
 
         if (tituloExiste) {
             throw new RuntimeException("Este artista já possui um álbum com esse título.");
@@ -69,7 +63,6 @@ public class AlbumService {
 
         // ----- Regra 5: Duração total do álbum <= 2 horas (7200s) -----
         if (albumDTO.tmDuracao() != null) {
-
             int duracaoSegundos = albumDTO.tmDuracao()
                     .toLocalTime()
                     .toSecondOfDay();
@@ -78,30 +71,32 @@ public class AlbumService {
                 throw new RuntimeException("A duração total do álbum não pode ultrapassar 2 horas.");
             }
         }
-        
+
+        // ----- Status automático baseado na quantidade de músicas -----
+        String status = albumDTO.qtdMusica() >= 10 ? "COMPLETO" : "INCOMPLETO";
+
+        // ----- Montar entidade -----
         Album album = new Album();
         album.setArtista(artista);
+        album.setGravadora(gravadora);
         album.setDcTitulo(albumDTO.dcTitulo());
         album.setDtAnoLancamento(albumDTO.dtAnoLancamento());
         album.setQtdMusica(albumDTO.qtdMusica());
         album.setTmDuracao(albumDTO.tmDuracao());
-    
-        // ----- Salvar -----
+        album.setDcStatus(status);
+
         return albumRepository.save(album);
     }
 
-    // LISTAR TODOS
     public List<Album> listar() {
         return albumRepository.findAll();
     }
 
-    // BUSCAR POR ID
     public Album buscarPorId(Long id) {
         return albumRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Álbum não encontrado."));
     }
 
-    // DELETAR POR ID
     public void deletar(Long id) {
         if (!albumRepository.existsById(id)) {
             throw new RuntimeException("Álbum não encontrado para exclusão.");

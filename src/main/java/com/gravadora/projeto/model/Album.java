@@ -39,7 +39,7 @@ public class Album {
     @Column(name = "qtd_musica", nullable = false)
     private int qtdMusica;
 
-    @Column(name = "tm_tmduracao", nullable = false)
+    @Column(name = "tm_duracao", nullable = false)
     private Time tmDuracao;
 
     @ManyToOne
