@@ -318,7 +318,7 @@ Para garantir a qualidade do código, execute os testes com o seguinte comando
     ```
 
 - **PUT** `/album/{id}`
-  - **Justificativa:** PUT é utilizado para atualização completa de um recurso existente, identificado pelo ID na rota. 
+  - **Justificativa:** PUT é utilizado para atualização completa de um recurso existente, identificado pelo ID na rota.
     `dcStatus não é enviado, pois é gerado automaticamente pelo service.`
   - **Body:**
     ```json
