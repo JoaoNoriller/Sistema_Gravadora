@@ -20,6 +20,21 @@ public class GravadoraService {
     // SALVAR
     public Gravadora salvar(GravadoraDTO gravadoraDTO) {
 
+        // Regra: Nome obrigatório
+        if (gravadoraDTO.dcNome() == null || gravadoraDTO.dcNome().trim().isEmpty()) {
+            throw new RuntimeException("O nome da gravadora é obrigatório.");
+        }
+
+        // Regra: CNPJ obrigatório
+        if (gravadoraDTO.dcCnpj() == null || gravadoraDTO.dcCnpj().trim().isEmpty()) {
+            throw new RuntimeException("O CNPJ da gravadora é obrigatório.");
+        }
+
+        // Regra: CNPJ deve ter 14 dígitos
+        if (gravadoraDTO.dcCnpj().trim().length() != 14) {
+            throw new RuntimeException("O CNPJ deve conter 14 dígitos.");
+        }
+
         // Regra 1: Nome único
         boolean nomeExiste = gravadoraRepository.findByDcNome(gravadoraDTO.dcNome())
                 .stream()
@@ -55,6 +70,15 @@ public class GravadoraService {
         // Nome obrigatório
         if (gravadoraDTO.dcNome() == null || gravadoraDTO.dcNome().trim().isEmpty()) {
             throw new RuntimeException("O nome da gravadora é obrigatório.");
+        }
+         // Regra: CNPJ obrigatório
+        if (gravadoraDTO.dcCnpj() == null || gravadoraDTO.dcCnpj().trim().isEmpty()) {
+            throw new RuntimeException("O CNPJ da gravadora é obrigatório.");
+        }
+
+        // Regra: CNPJ deve ter 14 dígitos
+        if (gravadoraDTO.dcCnpj().trim().length() != 14) {
+            throw new RuntimeException("O CNPJ deve conter 14 dígitos.");
         }
 
         // Busca a gravadora existente

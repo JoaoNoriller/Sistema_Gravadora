@@ -20,14 +20,17 @@ public class ArtistaService {
     // SALVAR
     public Artista salvar(ArtistaDTO artistaDTO) {
 
-        // Regra: Nome do artista deve ser único
-        List<Artista> artistasComMesmoNome = artistaRepository.findByDcNome(artistaDTO.dcNome());
+        // Regra: Nome obrigatório
+        if (artistaDTO.dcNome() == null || artistaDTO.dcNome().trim().isEmpty()) {
+            throw new RuntimeException("O nome do artista é obrigatório.");
+        }
 
+        // Regra: Nome único
+        List<Artista> artistasComMesmoNome = artistaRepository.findByDcNome(artistaDTO.dcNome());
         if (!artistasComMesmoNome.isEmpty()) {
             throw new RuntimeException("Já existe um artista cadastrado com esse nome.");
         }
 
-        // Converter DTO -> Entidade com todos os campos
         Artista artista = new Artista();
         artista.setDcNome(artistaDTO.dcNome());
         artista.setDcEndereco(artistaDTO.dcEndereco());
@@ -41,17 +44,16 @@ public class ArtistaService {
     // ATUALIZAR
     public Artista atualizar(Long id, ArtistaDTO artistaDTO) {
 
-        // Nome obrigatório
+        // Regra: Nome obrigatório
         if (artistaDTO.dcNome() == null || artistaDTO.dcNome().trim().isEmpty()) {
             throw new RuntimeException("O nome do artista é obrigatório.");
-
         }
 
-        // Busca o artista existente — lança exceção se não encontrar
+        // Busca o artista existente
         Artista artista = artistaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Artista não encontrado."));
 
-        // Verifica se outro artista já usa esse nome (ignora o próprio)
+        // Regra: Nome único (ignora o próprio)
         List<Artista> artistasComMesmoNome = artistaRepository.findByDcNome(artistaDTO.dcNome());
         boolean nomeEmUso = artistasComMesmoNome.stream()
                 .anyMatch(a -> !a.getIdArtista().equals(id));
@@ -90,5 +92,4 @@ public class ArtistaService {
     public void excluirTodos() {
         artistaRepository.deleteAll();
     }
-
 }
