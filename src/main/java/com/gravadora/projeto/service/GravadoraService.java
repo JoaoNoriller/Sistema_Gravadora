@@ -52,11 +52,16 @@ public class GravadoraService {
     // ATUALIZAR
     public Gravadora atualizar(Long id, GravadoraDTO gravadoraDTO) {
 
+        // Nome obrigatório
+        if (gravadoraDTO.dcNome() == null || gravadoraDTO.dcNome().trim().isEmpty()) {
+            throw new RuntimeException("O nome da gravadora é obrigatório.");
+        }
+
         // Busca a gravadora existente
         Gravadora gravadora = gravadoraRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Gravadora não encontrada."));
 
-        // Regra 1: Nome único (ignora a própria gravadora)
+        // Nome único
         boolean nomeEmUso = gravadoraRepository.findByDcNome(gravadoraDTO.dcNome())
                 .stream()
                 .anyMatch(g -> !g.getIdGravadora().equals(id));
@@ -65,7 +70,7 @@ public class GravadoraService {
             throw new RuntimeException("Já existe uma gravadora cadastrada com esse nome.");
         }
 
-        // Regra 2: CNPJ único (ignora a própria gravadora)
+        // CNPJ único
         boolean cnpjEmUso = gravadoraRepository.findByDcCnpj(gravadoraDTO.dcCnpj())
                 .stream()
                 .anyMatch(g -> !g.getIdGravadora().equals(id));

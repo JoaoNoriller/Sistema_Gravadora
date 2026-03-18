@@ -41,6 +41,12 @@ public class ArtistaService {
     // ATUALIZAR
     public Artista atualizar(Long id, ArtistaDTO artistaDTO) {
 
+        // Nome obrigatório
+        if (artistaDTO.dcNome() == null || artistaDTO.dcNome().trim().isEmpty()) {
+            throw new RuntimeException("O nome do artista é obrigatório.");
+
+        }
+
         // Busca o artista existente — lança exceção se não encontrar
         Artista artista = artistaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Artista não encontrado."));
@@ -64,23 +70,23 @@ public class ArtistaService {
         return artistaRepository.save(artista);
     }
 
-    //LISTAR TODOS
+    // LISTAR TODOS
     public List<Artista> listarTodos() {
         return artistaRepository.findAll();
     }
 
-    //BUSCAR POR ID
+    // BUSCAR POR ID
     public Artista buscarPorId(Long id) {
         return artistaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Artista não encontrado."));
     }
 
-    //EXCLUIR POR ID
+    // EXCLUIR POR ID
     public void excluir(Long id) {
         artistaRepository.deleteById(id);
     }
 
-    //EXCLUIR TODOS
+    // EXCLUIR TODOS
     public void excluirTodos() {
         artistaRepository.deleteAll();
     }
