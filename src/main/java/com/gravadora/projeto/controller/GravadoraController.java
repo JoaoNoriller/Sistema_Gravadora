@@ -53,18 +53,11 @@ public class GravadoraController {
         }
     }
 
-    //ATUALIZAR GRAVADORA
+    // ATUALIZAR GRAVADORA
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody GravadoraDTO gravadoraDTO) {
         try {
-            Gravadora gravadoraExistente = gravadoraService.buscarPorId(id);
-            gravadoraExistente.setDcNome(gravadoraDTO.dcNome());
-            gravadoraExistente.setDcEndereco(gravadoraDTO.dcEndereco());
-            gravadoraExistente.setDcTelefone(gravadoraDTO.dcTelefone());
-            gravadoraExistente.setDcPais(gravadoraDTO.dcPais());
-            gravadoraExistente.setDtDataFundacao(gravadoraDTO.dtDataFundacao());
-            gravadoraExistente.setDcCnpj(gravadoraDTO.dcCnpj());
-            Gravadora atualizada = gravadoraService.salvar(gravadoraDTO);
+            Gravadora atualizada = gravadoraService.atualizar(id, gravadoraDTO);
             return ResponseEntity.ok(atualizada);
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());

@@ -8,10 +8,9 @@ import com.gravadora.projeto.model.Gravadora;
 
 public interface GravadoraRepository extends JpaRepository<Gravadora, Long> {
 
-    //Consulta 1: Buscar gravadora pelo país
-    List<Gravadora> findByDcPais(String dcPais);
+     List<Gravadora> findByDcNome(String dcNome);   // ← validação de nome duplicado
 
-    //Consulta 2: Buscar gravadora pelo nome
-    List<Gravadora> findByDcNome(String nome);
-
+    List<Gravadora> findByDcCnpj(String dcCnpj);   // ← validação de CNPJ duplicado
 }
+
+
