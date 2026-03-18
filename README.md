@@ -69,5 +69,286 @@ Para garantir a qualidade do código, execute os testes com o seguinte comando
 
 + `mvn test`
 
+### 🎤 Artista — `/artista`
+
+- **POST** `/artista`
+  - **Justificativa:** POST é utilizado para criação de novos recursos. Envia os dados do artista no corpo da requisição.
+  - **Body:**
+    ```json
+    {
+      "dcNome": "string",
+      "dcEndereco": "string",
+      "dtNascimento": "yyyy-MM-dd",
+      "dcNacionalidade": "string",
+      "dcGeneroMusical": "string"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "idArtista": 1,
+      "dcNome": "string",
+      "dcEndereco": "string",
+      "dtNascimento": "yyyy-MM-dd",
+      "dcNacionalidade": "string",
+      "dcGeneroMusical": "string"
+    }
+    ```
+
+- **GET** `/artista`
+  - **Justificativa:** GET é utilizado para consulta de dados sem alteração de estado. Retorna todos os artistas cadastrados.
+  - **Response:**
+    ```json
+    [
+      {
+        "idArtista": 1,
+        "dcNome": "string",
+        "dcEndereco": "string",
+        "dtNascimento": "yyyy-MM-dd",
+        "dcNacionalidade": "string",
+        "dcGeneroMusical": "string"
+      }
+    ]
+    ```
+
+- **GET** `/artista/{id}`
+  - **Justificativa:** GET com parâmetro de rota para buscar um recurso específico pelo seu identificador.
+  - **Response:**
+    ```json
+    {
+      "idArtista": 1,
+      "dcNome": "string",
+      "dcEndereco": "string",
+      "dtNascimento": "yyyy-MM-dd",
+      "dcNacionalidade": "string",
+      "dcGeneroMusical": "string"
+    }
+    ```
+
+- **PUT** `/artista/{id}`
+  - **Justificativa:** PUT é utilizado para atualização completa de um recurso existente, identificado pelo ID na rota.
+  - **Body:**
+    ```json
+    {
+      "dcNome": "string",
+      "dcEndereco": "string",
+      "dtNascimento": "yyyy-MM-dd",
+      "dcNacionalidade": "string",
+      "dcGeneroMusical": "string"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "idArtista": 1,
+      "dcNome": "string",
+      "dcEndereco": "string",
+      "dtNascimento": "yyyy-MM-dd",
+      "dcNacionalidade": "string",
+      "dcGeneroMusical": "string"
+    }
+    ```
+
+- **DELETE** `/artista/{id}`
+  - **Justificativa:** DELETE é utilizado para remoção de um recurso existente identificado pelo ID.
+  - **Response:**
+    ```
+    Artista removido com sucesso!
+    ```
+
+---
+
+### 🏢 Gravadora — `/gravadora`
+
+- **POST** `/gravadora`
+  - **Justificativa:** POST é utilizado para criação de novos recursos. Envia os dados da gravadora no corpo da requisição.
+  - **Body:**
+    ```json
+    {
+      "dcNome": "string",
+      "dcEndereco": "string",
+      "dcTelefone": "string",
+      "dcPais": "string",
+      "dtDataFundacao": "yyyy-MM-dd",
+      "dcCnpj": "string"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "idGravadora": 1,
+      "dcNome": "string",
+      "dcEndereco": "string",
+      "dcTelefone": "string",
+      "dcPais": "string",
+      "dtDataFundacao": "yyyy-MM-dd",
+      "dcCnpj": "string"
+    }
+    ```
+
+- **GET** `/gravadora`
+  - **Justificativa:** GET é utilizado para consulta de dados sem alteração de estado. Retorna todas as gravadoras cadastradas.
+  - **Response:**
+    ```json
+    [
+      {
+        "idGravadora": 1,
+        "dcNome": "string",
+        "dcEndereco": "string",
+        "dcTelefone": "string",
+        "dcPais": "string",
+        "dtDataFundacao": "yyyy-MM-dd",
+        "dcCnpj": "string"
+      }
+    ]
+    ```
+
+- **GET** `/gravadora/{id}`
+  - **Justificativa:** GET com parâmetro de rota para buscar uma gravadora específica pelo seu identificador.
+  - **Response:**
+    ```json
+    {
+      "idGravadora": 1,
+      "dcNome": "string",
+      "dcEndereco": "string",
+      "dcTelefone": "string",
+      "dcPais": "string",
+      "dtDataFundacao": "yyyy-MM-dd",
+      "dcCnpj": "string"
+    }
+    ```
+
+- **PUT** `/gravadora/{id}`
+  - **Justificativa:** PUT é utilizado para atualização completa de um recurso existente, identificado pelo ID na rota.
+  - **Body:**
+    ```json
+    {
+      "dcNome": "string",
+      "dcEndereco": "string",
+      "dcTelefone": "string",
+      "dcPais": "string",
+      "dtDataFundacao": "yyyy-MM-dd",
+      "dcCnpj": "string"
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "idGravadora": 1,
+      "dcNome": "string",
+      "dcEndereco": "string",
+      "dcTelefone": "string",
+      "dcPais": "string",
+      "dtDataFundacao": "yyyy-MM-dd",
+      "dcCnpj": "string"
+    }
+    ```
+
+- **DELETE** `/gravadora/{id}`
+  - **Justificativa:** DELETE é utilizado para remoção de um recurso existente identificado pelo ID.
+  - **Response:**
+    ```
+    Gravadora removida com sucesso!
+    ```
+
+---
+
+### 💿 Album — `/album`
+
+- **POST** `/album`
+  - **Justificativa:** POST é utilizado para criação de novos recursos. Envia os dados do álbum no corpo da requisição, com vínculo obrigatório a um artista e uma gravadora.
+  - **Body:**
+    ```json
+    {
+      "dcTitulo": "string",
+      "dtAnoLancamento": "yyyy-MM-dd",
+      "qtdMusica": 10,
+      "tmDuracao": "HH:mm:ss",
+      "idArtista": 1,
+      "idGravadora": 1
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "idAlbum": 1,
+      "dcTitulo": "string",
+      "dtAnoLancamento": "yyyy-MM-dd",
+      "dcStatus": "COMPLETO",
+      "qtdMusica": 10,
+      "tmDuracao": "HH:mm:ss",
+      "artista": { "idArtista": 1, "dcNome": "string" },
+      "gravadora": { "idGravadora": 1, "dcNome": "string" }
+    }
+    ```
+
+- **GET** `/album`
+  - **Justificativa:** GET é utilizado para consulta de dados sem alteração de estado. Retorna todos os álbuns cadastrados.
+  - **Response:**
+    ```json
+    [
+      {
+        "idAlbum": 1,
+        "dcTitulo": "string",
+        "dtAnoLancamento": "yyyy-MM-dd",
+        "dcStatus": "COMPLETO",
+        "qtdMusica": 10,
+        "tmDuracao": "HH:mm:ss",
+        "artista": { "idArtista": 1, "dcNome": "string" },
+        "gravadora": { "idGravadora": 1, "dcNome": "string" }
+      }
+    ]
+    ```
+
+- **GET** `/album/{id}`
+  - **Justificativa:** GET com parâmetro de rota para buscar um álbum específico pelo seu identificador.
+  - **Response:**
+    ```json
+    {
+      "idAlbum": 1,
+      "dcTitulo": "string",
+      "dtAnoLancamento": "yyyy-MM-dd",
+      "dcStatus": "COMPLETO",
+      "qtdMusica": 10,
+      "tmDuracao": "HH:mm:ss",
+      "artista": { "idArtista": 1, "dcNome": "string" },
+      "gravadora": { "idGravadora": 1, "dcNome": "string" }
+    }
+    ```
+
+- **PUT** `/album/{id}`
+  - **Justificativa:** PUT é utilizado para atualização completa de um recurso existente, identificado pelo ID na rota.
+  - **Body:**
+    ```json
+    {
+      "dcTitulo": "string",
+      "dtAnoLancamento": "yyyy-MM-dd",
+      "qtdMusica": 10,
+      "tmDuracao": "HH:mm:ss",
+      "idArtista": 1,
+      "idGravadora": 1
+    }
+    ```
+  - **Response:**
+    ```json
+    {
+      "idAlbum": 1,
+      "dcTitulo": "string",
+      "dtAnoLancamento": "yyyy-MM-dd",
+      "dcStatus": "COMPLETO",
+      "qtdMusica": 10,
+      "tmDuracao": "HH:mm:ss",
+      "artista": { "idArtista": 1, "dcNome": "string" },
+      "gravadora": { "idGravadora": 1, "dcNome": "string" }
+    }
+    ```
+
+- **DELETE** `/album/{id}`
+  - **Justificativa:** DELETE é utilizado para remoção de um recurso existente identificado pelo ID.
+  - **Response:**
+    ```
+    Álbum removido com sucesso!
+    ```
+
 
 

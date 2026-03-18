@@ -34,7 +34,10 @@ class ArtistaServiceTest {
     private ArtistaService artistaService;  // Cria instância real do service usando os repositórios falsos
 
     private Artista artista;
+
     private ArtistaDTO artistaDTO;
+    private ArtistaDTO artistaAtualizadoDTO;
+
 
     @BeforeEach // Roda antes de cada teste
     void setup() { 
@@ -47,6 +50,9 @@ class ArtistaServiceTest {
 
         artistaDTO = new ArtistaDTO("Xuxa", "Barra da Tijuca", 
         LocalDate.of(1963, 3, 27), "Brasil", "Pop");
+
+        artistaAtualizadoDTO = new ArtistaDTO("Neri", "Tijucas, 45", 
+        LocalDate.of(1960, 2, 22), "Brasil", "Pop");
     }
 
     // Cenário 1 — Cadastro com sucesso
@@ -74,23 +80,35 @@ class ArtistaServiceTest {
         assertEquals("Artista não encontrado.", ex.getMessage()); //Verifica se a mensagem do erro está correta
     }
 
-    // Cenário 4 – Atualizar nome do artista
+    // Cenário 4 – Atualizar artista
     @Test
-    void deveAtualizarNomeDoArtista() {
-        
-        ArtistaDTO atualizadoDTO = new ArtistaDTO("Nome Atualizado", "Barra da Tijuca",
-        LocalDate.of(1963, 3, 27), "Brasil", "Pop");
+    void deveAtualizarArtistaComSucesso() {
 
-        Artista atualizado = new Artista();
-        atualizado.setIdArtista(1L);
-        atualizado.setDcNome("Nome Atualizado");
+        Artista artistaAtualizado = new Artista();
+        artistaAtualizado.setIdArtista(1L);
+        artistaAtualizado.setDcNome(artistaAtualizadoDTO.dcNome());
+        artistaAtualizado.setDcEndereco(artistaAtualizadoDTO.dcEndereco());
+        artistaAtualizado.setDtNascimento(artistaAtualizadoDTO.dtNascimento());
+        artistaAtualizado.setDcNacionalidade(artistaAtualizadoDTO.dcNacionalidade());
+        artistaAtualizado.setDcGeneroMusical(artistaAtualizadoDTO.dcGeneroMusical());
 
-        when(artistaRepository.findByDcNome("Nome Atualizado")).thenReturn(Collections.emptyList()); //Simula que o repositório vai salvar e devolver o atualizado
-        when(artistaRepository.save(any(Artista.class))).thenReturn(atualizado); //Simula que não há outro artista com o novo nome
+        // Simula que o artista existe no banco
+        when(artistaRepository.findById(1L))
+                .thenReturn(Optional.of(artista));
 
-        Artista retorno = artistaService.salvar(atualizadoDTO);
+        // ← "Neri" é o nome do DTO de atualização — deve bater com o que o service chama
+        when(artistaRepository.findByDcNome("Neri"))
+                .thenReturn(Collections.emptyList());
 
-        assertEquals("Nome Atualizado", retorno.getDcNome()); //Validação
+        // Simula o save retornando o artista atualizado
+        when(artistaRepository.save(any(Artista.class)))
+                .thenReturn(artistaAtualizado);
+
+        Artista retorno = artistaService.atualizar(1L, artistaAtualizadoDTO);
+
+        assertNotNull(retorno);
+        assertEquals("Neri", retorno.getDcNome());
+        assertEquals("Tijucas, 45", retorno.getDcEndereco());
     }
 
     // Cenário 5 – Listar todos

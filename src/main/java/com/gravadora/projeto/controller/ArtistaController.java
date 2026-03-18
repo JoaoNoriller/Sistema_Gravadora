@@ -57,9 +57,7 @@ public class ArtistaController {
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody ArtistaDTO artistaDTO) {
         try {
-            Artista artistaExistente = artistaService.buscarPorId(id);
-            artistaExistente.setDcNome(artistaDTO.dcNome());
-            Artista atualizado = artistaService.salvar(artistaDTO);
+            Artista atualizado = artistaService.atualizar(id, artistaDTO);
             return ResponseEntity.ok(atualizado);
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
