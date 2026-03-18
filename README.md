@@ -257,6 +257,7 @@ Para garantir a qualidade do código, execute os testes com o seguinte comando
 
 - **POST** `/album`
   - **Justificativa:** POST é utilizado para criação de novos recursos. Envia os dados do álbum no corpo da requisição, com vínculo obrigatório a um artista e uma gravadora.
+    `dcStatus não é enviado, pois é gerado automaticamente pelo service.`
   - **Body:**
     ```json
     {
@@ -317,7 +318,8 @@ Para garantir a qualidade do código, execute os testes com o seguinte comando
     ```
 
 - **PUT** `/album/{id}`
-  - **Justificativa:** PUT é utilizado para atualização completa de um recurso existente, identificado pelo ID na rota.
+  - **Justificativa:** PUT é utilizado para atualização completa de um recurso existente, identificado pelo ID na rota. 
+    `dcStatus não é enviado, pois é gerado automaticamente pelo service.`
   - **Body:**
     ```json
     {
