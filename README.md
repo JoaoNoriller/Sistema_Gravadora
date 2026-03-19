@@ -349,6 +349,65 @@ Para garantir a qualidade do código, execute os testes com o seguinte comando
     }
     ```
 
+- **GET** `/album/artista/{idArtista}`
+  - **Justificativa:** GET com parâmetro de rota para listar todos os álbuns vinculados a um artista específico. 
+      Útil para verificar quantos álbuns um artista possui e quais são eles.
+  - **Response:**
+```json
+    [
+  {
+    "idAlbum": 2,
+    "dcTitulo": "shimbalaiê",
+    "dtAnoLancamento": "2026-03-19",
+    "dcStatus": "INCOMPLETO",
+    "qtdMusica": 6,
+    "tmDuracao": "00:36:07",
+    "artista": {
+      "idArtista": 6,
+      "dcNome": "ABABAB",
+      "dcEndereco": "string",
+      "dtNascimento": "2026-03-18",
+      "dcNacionalidade": "string",
+      "dcGeneroMusical": "string"
+    },
+    "gravadora": {
+      "idGravadora": 3,
+      "dcNome": "calypso",
+      "dcEndereco": "string",
+      "dcTelefone": "string",
+      "dcPais": "string",
+      "dtDataFundacao": "2026-03-18",
+      "dcCnpj": "string44"
+    }
+  },
+  {
+    "idAlbum": 16,
+    "dcTitulo": "SDDD",
+    "dtAnoLancamento": "2026-03-19",
+    "dcStatus": "COMPLETO",
+    "qtdMusica": 11,
+    "tmDuracao": "01:17:46",
+    "artista": {
+      "idArtista": 6,
+      "dcNome": "ABABAB",
+      "dcEndereco": "string",
+      "dtNascimento": "2026-03-18",
+      "dcNacionalidade": "string",
+      "dcGeneroMusical": "string"
+    },
+    "gravadora": {
+      "idGravadora": 2,
+      "dcNome": "string",
+      "dcEndereco": "string",
+      "dcTelefone": "string",
+      "dcPais": "string",
+      "dtDataFundacao": "2026-03-18",
+      "dcCnpj": "string"
+    }
+  }
+]
+```
+
 - **DELETE** `/album/{id}`
   - **Justificativa:** DELETE é utilizado para remoção de um recurso existente identificado pelo ID.
   - **Response:**
