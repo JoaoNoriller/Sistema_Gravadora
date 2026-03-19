@@ -261,8 +261,10 @@ Para garantir a qualidade do código, execute os testes com o seguinte comando
   - **Body:**
     ```json
     {
+      "idAlbum": null,
       "dcTitulo": "string",
       "dtAnoLancamento": "yyyy-MM-dd",
+      "dcStatus": null,
       "qtdMusica": 10,
       "tmDuracao": "HH:mm:ss",
       "idArtista": 1,
@@ -318,13 +320,15 @@ Para garantir a qualidade do código, execute os testes com o seguinte comando
     ```
 
 - **PUT** `/album/{id}`
-  - **Justificativa:** PUT é utilizado para atualização completa de um recurso existente, identificado pelo ID na rota.
-    `dcStatus não é enviado, pois é gerado automaticamente pelo service.`
+  - **Justificativa:** PUT é utilizado para atualização completa de um recurso existente, identificado pelo ID na rota. O ID do álbum é informado na URL — o campo `idAlbum` 
+      no body deve ser enviado como `null`. `dcStatus não é enviado, pois é gerado automaticamente pelo service.`
   - **Body:**
     ```json
     {
+      "idAlbum": null,
       "dcTitulo": "string",
       "dtAnoLancamento": "yyyy-MM-dd",
+      "dcStatus": null,
       "qtdMusica": 10,
       "tmDuracao": "HH:mm:ss",
       "idArtista": 1,
