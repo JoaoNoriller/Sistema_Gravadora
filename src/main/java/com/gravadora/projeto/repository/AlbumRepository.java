@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.gravadora.projeto.model.Album;
 import com.gravadora.projeto.model.Artista;
@@ -25,6 +27,12 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
     // Verificar se o artista já possui um álbum com o mesmo título
     List<Album> findByDcTituloAndArtista_IdArtista(String dcTitulo, Long idArtista);
 
-    // Contar álbuns lançados por um artista em determinado ano
+    // Contar álbuns lançados por um artista em determinado ano // Método antigo, foi mantido para não quebrar nada, mas não usado na RN-04
     int countByArtista_IdArtistaAndDtAnoLancamento(Long idArtista, LocalDate dtAnoLancamento);
+
+     // RN-04: Contar álbuns lançados por um artista em determinado ANO
+    // Corrigido para contar por ano inteiro e não por data exata
+    @Query("SELECT COUNT(a) FROM Album a WHERE a.artista.idArtista = :idArtista AND YEAR(a.dtAnoLancamento) = :ano")
+    int countByArtista_IdArtistaAndAno(@Param("idArtista") Long idArtista, @Param("ano") int ano);
 }
+

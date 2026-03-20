@@ -12,8 +12,10 @@ import com.gravadora.projeto.model.Gravadora;
 import com.gravadora.projeto.repository.AlbumRepository;
 
 /**
- * Camada de serviço responsável por toda a lógica de negócio relacionada aos álbuns.
- * Aqui ficam as validações, regras e operações antes de qualquer acesso ao banco de dados.
+ * Camada de serviço responsável por toda a lógica de negócio relacionada aos
+ * álbuns.
+ * Aqui ficam as validações, regras e operações antes de qualquer acesso ao
+ * banco de dados.
  */
 @Service
 public class AlbumService {
@@ -22,7 +24,8 @@ public class AlbumService {
     private AlbumRepository albumRepository;
 
     // Injetamos os services de Artista e Gravadora para validar
-    // se eles existem antes de salvar o álbum — evitando acesso direto aos repositories
+    // se eles existem antes de salvar o álbum — evitando acesso direto aos
+    // repositories
     @Autowired
     private ArtistaService artistaService;
 
@@ -40,7 +43,8 @@ public class AlbumService {
     public Album salvarAlbum(AlbumDTO albumDTO) {
 
         // RN-07: Verifica se o artista e gravadora informado existe no sistema
-        // Se não existir, o service de Artista e Gravadora já lança uma exceção automaticamente
+        // Se não existir, o service de Artista e Gravadora já lança uma exceção
+        // automaticamente
         Artista artista = artistaService.buscarPorId(albumDTO.idArtista());
 
         // RN-08:
@@ -67,8 +71,10 @@ public class AlbumService {
         }
 
         // RN-04: Um artista não pode lançar mais de 10 álbuns no mesmo ano
-        int totalAno = albumRepository.countByArtista_IdArtistaAndDtAnoLancamento(
-                artista.getIdArtista(), albumDTO.dtAnoLancamento());
+        // Contamos por ano inteiro não por data exata
+        int ano = albumDTO.dtAnoLancamento().getYear();
+        int totalAno = albumRepository.countByArtista_IdArtistaAndAno(
+                artista.getIdArtista(), ano);
 
         if (totalAno >= 10) {
             throw new RuntimeException("O artista já lançou o máximo de 10 álbuns neste ano.");
@@ -146,13 +152,15 @@ public class AlbumService {
         }
 
         // RN-04: Máximo 10 álbuns por ano
+        // Contamos por ano inteiro — não por data exata
+        int ano = albumDTO.dtAnoLancamento().getYear();
+        int totalAno = albumRepository.countByArtista_IdArtistaAndAno(
+                artista.getIdArtista(), ano);
+
         // Como estamos editando um álbum que já existe, descontamos ele da contagem
         // para não bloquear indevidamente a edição
-        int totalAno = albumRepository.countByArtista_IdArtistaAndDtAnoLancamento(
-                artista.getIdArtista(), albumDTO.dtAnoLancamento());
-
-        if (album.getDtAnoLancamento().equals(albumDTO.dtAnoLancamento())) {
-            totalAno--; // desconta o próprio álbum — ele já estava contado
+        if (album.getDtAnoLancamento().getYear() == albumDTO.dtAnoLancamento().getYear()) {
+            totalAno--;
         }
 
         if (totalAno >= 10) {
