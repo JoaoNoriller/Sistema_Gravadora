@@ -18,6 +18,11 @@ import com.gravadora.projeto.dto.AlbumDTO;
 import com.gravadora.projeto.model.Album;
 import com.gravadora.projeto.service.AlbumService;
 
+/**
+ * Controller responsável por receber as requisições HTTP relacionadas aos álbuns.
+ * Ele não contém lógica de negócio, apenas recebe a requisição,
+ * repassa ao service e devolve a resposta adequada ao cliente.
+ */
 @RestController
 @RequestMapping("/album")
 public class AlbumController {
@@ -25,7 +30,10 @@ public class AlbumController {
     @Autowired
     private AlbumService albumService;
 
-    // CRIAR ÁLBUM
+    /**
+     * POST /album
+     * Cria um novo álbum no sistema.
+     */
     @PostMapping
     public ResponseEntity<?> criarAlbum(@RequestBody AlbumDTO albumDTO) {
         try {
@@ -36,13 +44,19 @@ public class AlbumController {
         }
     }
 
-    // LISTAR TODOS
+    /**
+     * GET /album
+     * Retorna a lista completa de álbuns cadastrados no sistema.
+     */
     @GetMapping
     public ResponseEntity<List<Album>> listar() {
         return ResponseEntity.ok(albumService.listar());
     }
 
-    // BUSCAR POR ID
+    /**
+     * GET /album/{id}
+     * Busca e retorna um álbum específico pelo seu ID.
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
         try {
@@ -53,29 +67,40 @@ public class AlbumController {
         }
     }
 
-    // ATUALIZAR ÁLBUM
+    /**
+     * GET /album/artista/{idArtista}
+     * Retorna todos os álbuns vinculados a um artista específico.
+     * Útil para visualizar o catálogo de um artista e verificar o limite de álbuns por ano.
+     */
+    @GetMapping("/artista/{idArtista}")
+    public ResponseEntity<?> listarPorArtista(@PathVariable Long idArtista) {
+        try {
+            List<Album> albuns = albumService.listarPorArtista(idArtista);
+            return ResponseEntity.ok(albuns);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+    }
+
+    /**
+     * PUT /album/{id}
+     * Atualiza os dados de um álbum existente identificado pelo ID na URL.
+     * O ID do álbum não precisa ser informado no body — ele vem da própria URL.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody AlbumDTO albumDTO) {
         try {
-            // Monta DTO com id da URL + dcStatus null (gerado automaticamente pelo service)
-            AlbumDTO dtoAtualizado = new AlbumDTO(
-                    id,
-                    albumDTO.dcTitulo(),
-                    albumDTO.dtAnoLancamento(),
-                    null,                    // ← dcStatus gerado pelo service
-                    albumDTO.qtdMusica(),
-                    albumDTO.tmDuracao(),
-                    albumDTO.idArtista(),
-                    albumDTO.idGravadora()
-            );
-            Album atualizado = albumService.salvarAlbum(dtoAtualizado); // ← dtoAtualizado, não albumDTO
+            Album atualizado = albumService.atualizarAlbum(id, albumDTO);
             return ResponseEntity.ok(atualizado);
         } catch (RuntimeException ex) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
         }
     }
 
-    // DELETAR ÁLBUM
+    /**
+     * DELETE /album/{id}
+     * Remove um álbum do sistema pelo seu ID.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletar(@PathVariable Long id) {
         try {

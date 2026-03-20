@@ -18,6 +18,11 @@ import com.gravadora.projeto.dto.GravadoraDTO;
 import com.gravadora.projeto.model.Gravadora;
 import com.gravadora.projeto.service.GravadoraService;
 
+/**
+ * Controller responsável por receber as requisições HTTP relacionadas às gravadoras
+ * Ele não contém lógica de negócio, apenas recebe a requisição,
+ * repassa ao service e devolve a resposta adequada ao cliente
+ */
 @RestController
 @RequestMapping("/gravadora")
 public class GravadoraController {
@@ -25,7 +30,10 @@ public class GravadoraController {
     @Autowired
     private GravadoraService gravadoraService;
 
-    //CRIAR GRAVADORA
+    /**
+     * POST /gravadora
+     * Cria uma nova gravadora no sistema
+     */
     @PostMapping
     public ResponseEntity<?> criarGravadora(@RequestBody GravadoraDTO gravadoraDTO) {
         try {
@@ -36,13 +44,19 @@ public class GravadoraController {
         }
     }
 
-    //LISTAR TODAS
+    /**
+     * GET /gravadora
+     * Retorna a lista completa de gravadoras cadastradas no sistema
+     */
     @GetMapping
     public ResponseEntity<List<Gravadora>> listarTodas() {
         return ResponseEntity.ok(gravadoraService.listarTodos());
     }
 
-    //BUSCAR POR ID
+    /**
+     * GET /gravadora/{id}
+     * Busca e retorna uma gravadora específica pelo seu ID
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
         try {
@@ -53,7 +67,11 @@ public class GravadoraController {
         }
     }
 
-    // ATUALIZAR GRAVADORA
+    /**
+     * PUT /gravadora/{id}
+     * Atualiza os dados de uma gravadora existente identificada pelo ID na URL
+     * O ID da gravadora não precisa ser informado no body, ele vem da própria URL
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody GravadoraDTO gravadoraDTO) {
         try {
@@ -64,7 +82,10 @@ public class GravadoraController {
         }
     }
 
-    //DELETAR GRAVADORA
+    /**
+     * DELETE /gravadora/{id}
+     * Remove uma gravadora do sistema pelo seu ID
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletar(@PathVariable Long id) {
         try {

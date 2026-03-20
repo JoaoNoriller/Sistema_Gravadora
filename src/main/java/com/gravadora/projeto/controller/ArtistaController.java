@@ -18,6 +18,11 @@ import com.gravadora.projeto.dto.ArtistaDTO;
 import com.gravadora.projeto.model.Artista;
 import com.gravadora.projeto.service.ArtistaService;
 
+/**
+ * Controller responsável por receber as requisições HTTP relacionadas aos artistas
+ * Ele não contém lógica de negócio, apenas recebe a requisição,
+ * repassa ao service e devolve a resposta adequada ao cliente
+ */
 @RestController
 @RequestMapping("/artista")
 public class ArtistaController {
@@ -25,7 +30,10 @@ public class ArtistaController {
     @Autowired
     private ArtistaService artistaService;
 
-    //CRIAR ARTISTA
+    /**
+     * POST /artista
+     * Cria um novo artista no sistema
+     */
     @PostMapping
     public ResponseEntity<?> criarArtista(@RequestBody ArtistaDTO artistaDTO) {
         try {
@@ -36,13 +44,19 @@ public class ArtistaController {
         }
     }
 
-    //LISTAR TODOS
+    /**
+     * GET /artista
+     * Retorna a lista completa de artistas cadastrados no sistema
+     */
     @GetMapping
     public ResponseEntity<List<Artista>> listarTodos() {
         return ResponseEntity.ok(artistaService.listarTodos());
     }
 
-    //BUSCAR POR ID
+    /**
+     * GET /artista/{id}
+     * Busca e retorna um artista específico pelo seu ID
+     */
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarPorId(@PathVariable Long id) {
         try {
@@ -53,7 +67,11 @@ public class ArtistaController {
         }
     }
 
-    //ATUALIZAR
+    /**
+     * PUT /artista/{id}
+     * Atualiza os dados de um artista existente identificado pelo ID na URL
+     * O ID do artista não precisa ser informado no body, ele vem da própria URL
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable Long id, @RequestBody ArtistaDTO artistaDTO) {
         try {
@@ -64,7 +82,10 @@ public class ArtistaController {
         }
     }
 
-    //DELETAR
+    /**
+     * DELETE /artista/{id}
+     * Remove um artista do sistema pelo seu ID.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deletar(@PathVariable Long id) {
         try {

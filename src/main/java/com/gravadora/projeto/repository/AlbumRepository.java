@@ -13,6 +13,9 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
     // Lista de álbuns de um artista
     List<Album> findByArtista(Artista artista);
 
+    // Lista de álbuns de um artista (por ID)
+    List<Album> findByArtista_IdArtista(Long idArtista);
+
     // Buscar álbuns por status
     List<Album> findByDcStatus(String dcStatus);
 
