@@ -39,11 +39,11 @@ public class AlbumService {
      */
     public Album salvarAlbum(AlbumDTO albumDTO) {
 
-        // Verifica se o artista informado existe no sistema
-        // Se não existir, o service de Artista já lança uma exceção automaticamente
+        // RN-07: Verifica se o artista e gravadora informado existe no sistema
+        // Se não existir, o service de Artista e Gravadora já lança uma exceção automaticamente
         Artista artista = artistaService.buscarPorId(albumDTO.idArtista());
 
-        // Mesma verificação para a gravadora
+        // RN-08:
         Gravadora gravadora = gravadoraService.buscarPorId(albumDTO.idGravadora());
 
         // RN-01: O álbum precisa ter mais de 5 músicas para ser cadastrado
@@ -116,8 +116,9 @@ public class AlbumService {
         Album album = albumRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Álbum não encontrado."));
 
-        // Validamos artista e gravadora da mesma forma que no cadastro
+        // RN-07: Validamos artista e gravadora da mesma forma que no cadastro
         Artista artista = artistaService.buscarPorId(albumDTO.idArtista());
+        // RN-08:
         Gravadora gravadora = gravadoraService.buscarPorId(albumDTO.idGravadora());
 
         // RN-01: Mais de 5 músicas obrigatório
@@ -212,7 +213,7 @@ public class AlbumService {
     }
 
     /**
-     * Remove um álbum pelo ID.
+     * RN-09: Remove um álbum pelo ID.
      * Valida se o álbum existe antes de tentar deletar.
      */
     public void deletar(Long id) {
