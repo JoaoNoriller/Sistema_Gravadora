@@ -126,6 +126,7 @@ Para garantir a qualidade do código, execute os testes com o seguinte comando
 
 - **PUT** `/artista/{id}`
   - **Justificativa:** PUT é utilizado para atualização completa de um recurso existente, identificado pelo ID na rota.
+      O ID do artista é informado na URL, não precisa ser enviado no body.
   - **Body:**
     ```json
     {
@@ -219,6 +220,7 @@ Para garantir a qualidade do código, execute os testes com o seguinte comando
 
 - **PUT** `/gravadora/{id}`
   - **Justificativa:** PUT é utilizado para atualização completa de um recurso existente, identificado pelo ID na rota.
+      O ID da gravadora é informado na URL, não precisa ser enviado no body.
   - **Body:**
     ```json
     {
@@ -318,9 +320,43 @@ Para garantir a qualidade do código, execute os testes com o seguinte comando
     }
     ```
 
+- **GET** `/album/artista/{idArtista}`
+  - **Justificativa:** GET com parâmetro de rota para listar todos os álbuns vinculados a um artista específico.
+      Útil para verificar quantos álbuns um artista possui e quais são eles.
+  - **Response:**
+    ```json
+    [
+      {
+        "idAlbum": 18,
+        "dcTitulo": "Rock",
+        "dtAnoLancamento": "2026-03-20",
+        "dcStatus": "COMPLETO",
+        "qtdMusica": 30,
+        "tmDuracao": "01:02:02",
+        "artista": {
+          "idArtista": 11,
+          "dcNome": "Artista teste",
+          "dcEndereco": "teste",
+          "dtNascimento": "2026-03-20",
+          "dcNacionalidade": "string",
+          "dcGeneroMusical": "pop"
+        },
+        "gravadora": {
+          "idGravadora": 3,
+          "dcNome": "calypso",
+          "dcEndereco": "string",
+          "dcTelefone": "string",
+          "dcPais": "string",
+          "dtDataFundacao": "2026-03-18",
+          "dcCnpj": "string44"
+        }
+      }
+    ]
+    ```
+
 - **PUT** `/album/{id}`
-  - **Justificativa:** PUT é utilizado para atualização completa de um recurso existente, identificado pelo ID na rota. O ID do álbum é informado na URL — o campo `idAlbum`
-    no body deve ser enviado como `null`. `dcStatus não é enviado, pois é gerado automaticamente pelo service.`
+  - **Justificativa:** PUT é utilizado para atualização completa de um recurso existente, identificado pelo ID na rota. O ID do álbum é informado na URL, o campo `idAlbum`
+      no body deve ser enviado como `null`. `dcStatus não é enviado, pois é gerado automaticamente pelo service.`
   - **Body:**
     ```json
     {
@@ -346,65 +382,6 @@ Para garantir a qualidade do código, execute os testes com o seguinte comando
       "artista": { "idArtista": 1, "dcNome": "string" },
       "gravadora": { "idGravadora": 1, "dcNome": "string" }
     }
-    ```
-
-- **GET** `/album/artista/{idArtista}`
-  - **Justificativa:** GET com parâmetro de rota para listar todos os álbuns vinculados a um artista específico.
-    Útil para verificar quantos álbuns um artista possui e quais são eles.
-  - **Response:**
-    ```json
-    [
-      {
-        "idAlbum": 2,
-        "dcTitulo": "shimbalaiê",
-        "dtAnoLancamento": "2026-03-19",
-        "dcStatus": "INCOMPLETO",
-        "qtdMusica": 6,
-        "tmDuracao": "00:36:07",
-        "artista": {
-          "idArtista": 6,
-          "dcNome": "ABABAB",
-          "dcEndereco": "string",
-          "dtNascimento": "2026-03-18",
-          "dcNacionalidade": "string",
-          "dcGeneroMusical": "string"
-        },
-        "gravadora": {
-          "idGravadora": 3,
-          "dcNome": "calypso",
-          "dcEndereco": "string",
-          "dcTelefone": "string",
-          "dcPais": "string",
-          "dtDataFundacao": "2026-03-18",
-          "dcCnpj": "string44"
-        }
-      },
-      {
-        "idAlbum": 16,
-        "dcTitulo": "SDDD",
-        "dtAnoLancamento": "2026-03-19",
-        "dcStatus": "COMPLETO",
-        "qtdMusica": 11,
-        "tmDuracao": "01:17:46",
-        "artista": {
-          "idArtista": 6,
-          "dcNome": "ABABAB",
-          "dcEndereco": "string",
-          "dtNascimento": "2026-03-18",
-          "dcNacionalidade": "string",
-          "dcGeneroMusical": "string"
-        },
-        "gravadora": {
-          "idGravadora": 2,
-          "dcNome": "string",
-          "dcEndereco": "string",
-          "dcTelefone": "string",
-          "dcPais": "string",
-          "dtDataFundacao": "2026-03-18",
-          "dcCnpj": "string"
-        }
-      }
-    ]
     ```
 
 - **DELETE** `/album/{id}`
