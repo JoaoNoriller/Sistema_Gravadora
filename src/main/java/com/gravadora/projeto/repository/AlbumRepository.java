@@ -35,4 +35,12 @@ public interface AlbumRepository extends JpaRepository<Album, Long> {
     @Query("SELECT COUNT(a) FROM Album a WHERE a.artista.idArtista = :idArtista AND YEAR(a.dtAnoLancamento) = :ano")
     int countByArtista_IdArtistaAndAno(@Param("idArtista") Long idArtista, @Param("ano") int ano);
 }
+    // ===================================================================
+    // INFORMAÇÃO SOMPRE O MÉTODO UTILIZADO
+    // ===================================================================
 
+    /*@Param É quem faz a ligação entre o parâmetro do método Java e o :placeholder dentro da @query */
+    /*Utilizei a @query para extrair somente o ano da data, pois antes o Spring não conseguia fazer*/
+
+    /*O :placeholder é um padrão de segurança, o valor nunca entra direto na query como texto, ele 
+    é tratado pelo Hibernate antes de chegar no banco, impedindo ataques de SQL Injection */
