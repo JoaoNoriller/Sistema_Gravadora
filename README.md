@@ -9,14 +9,13 @@ aplicando regras de negócio que garantem a integridade e consistência dos dado
 
 - `src/ :` Contém o código-fonte do projeto.
 - `controller/ :` Implementação dos controllers que recebem as requisições HTTP e se comunicam com os services.
-- `service/ :` Implementação das regras de negócio da aplicação.
-- `repository/ :` Interfaces de acesso ao banco de dados, utilizadas pelos services.
-- `model/ :` Classes que representam as entidades da aplicação (Album, Artista, Gravadora).
 - `dto/ :` Objetos de transferência de dados utilizados nas requisições e respostas.
+- `model/ :` Classes que representam as entidades da aplicação (Album, Artista, Gravadora).
+- `repository/ :` Interfaces de acesso ao banco de dados, utilizadas pelos services.
+- `service/ :` Implementação das regras de negócio da aplicação.
 
-* `docs/ :` Documentação do projeto, como diagramas e explicações da arquitetura.
 * `test/ :` Testes unitários e de integração para garantir a qualidade do código.
-* `scripts/ :` Scripts auxiliares para configuração ou execução do projeto.
+* `docs/ :` Documentação do projeto, como diagramas e explicações da arquitetura.
 
 <h3>README.md : Documento principal com instruções básicas sobre o projeto.</h3>
 
