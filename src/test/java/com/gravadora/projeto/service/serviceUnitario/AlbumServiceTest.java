@@ -37,10 +37,10 @@ class AlbumServiceTest {
     private AlbumRepository albumRepository;
 
     @Mock
-    private ArtistaService artistaService;   // ← mantido
+    private ArtistaService artistaService;  
 
     @Mock
-    private GravadoraService gravadoraService; // ← ADICIONADO (ArtistaRepository removido)
+    private GravadoraService gravadoraService; 
 
     @InjectMocks
     private AlbumService albumService;
@@ -50,6 +50,9 @@ class AlbumServiceTest {
     private Artista artista;
     private Gravadora gravadora;
 
+    /* Executado antes de cada teste
+     * Prepara os objetos base para evitar repetição de código
+     */
     @BeforeEach
     void setup() {
         artista = new Artista();
@@ -66,8 +69,8 @@ class AlbumServiceTest {
                 1L,
                 "Album Teste",
                 LocalDate.of(2024, 1, 1),
-                null,                                   // ← dcStatus gerado pelo service
-                10,                                     // ← 10 músicas = COMPLETO
+                null,                          // ← dcStatus gerado pelo service
+                10,                          // ← 10 músicas = COMPLETO
                 Time.valueOf(LocalTime.of(1, 0)),
                 artista.getIdArtista(),
                 gravadora.getIdGravadora()
@@ -75,42 +78,48 @@ class AlbumServiceTest {
 
         album = new Album();
         album.setArtista(artista);
-        album.setGravadora(gravadora);                  // ← gravadora adicionada
+        album.setGravadora(gravadora);                
         album.setDcTitulo(albumDTO.dcTitulo());
         album.setDtAnoLancamento(albumDTO.dtAnoLancamento());
         album.setQtdMusica(albumDTO.qtdMusica());
         album.setTmDuracao(albumDTO.tmDuracao());
-        album.setDcStatus("COMPLETO");                  // ← status adicionado
+        album.setDcStatus("COMPLETO"); // status adicionado
     }
 
-    // Cenário 1 — cadastrar álbum com sucesso
+   // Cenário 1 — cadastrar álbum com sucesso
     @Test
     void deveCadastrarAlbumComSucesso() {
 
+        // Simula que o artista existe no sistema
         when(artistaService.buscarPorId(1L))
                 .thenReturn(artista);
 
-        when(gravadoraService.buscarPorId(1L))          // ← mock da gravadora
+        // Simula que a gravadora existe no sistema
+        when(gravadoraService.buscarPorId(1L)) 
                 .thenReturn(gravadora);
 
-        when(albumRepository.countByArtista_IdArtistaAndDtAnoLancamento(
-                1L, albumDTO.dtAnoLancamento()))
-                .thenReturn(0);
-
+         // Simula que não existe outro álbum com esse título para esse artista (RN-03)
         when(albumRepository.findByDcTituloAndArtista_IdArtista(
                 "Album Teste", 1L))
                 .thenReturn(Collections.emptyList());
 
+        // Simula que o artista não atingiu o limite de 10 álbuns no ano (RN-04)
+        when(albumRepository.countByArtista_IdArtistaAndAno(
+                1L, 2024))
+                .thenReturn(0);
+
+        // Simula que o banco salva e retorna o álbum        
         when(albumRepository.save(any(Album.class)))
                 .thenReturn(album);
 
+        // Executa o método real do service        
         Album salvo = albumService.salvarAlbum(albumDTO);
 
-        assertNotNull(salvo);
+        assertNotNull(salvo); // Verifica se o álbum foi retornado corretamente
         assertEquals("Album Teste", salvo.getDcTitulo());
-        assertEquals("COMPLETO", salvo.getDcStatus());  // ← assert de status
+        assertEquals("COMPLETO", salvo.getDcStatus());
 
-        verify(albumRepository, times(1)).save(any(Album.class));
+        verify(albumRepository).save(any(Album.class)); // Confirma que o save foi chamado exatamente 1 vez
     }
 
     // Cenário 2 — erro ao buscar álbum inexistente
@@ -139,30 +148,41 @@ class AlbumServiceTest {
     @Test
     void deveAtualizarAlbumComSucesso() {
 
+        // Simula que o álbum com ID 1 existe no banco
+        when(albumRepository.findById(1L)) 
+                .thenReturn(Optional.of(album));
+
+        // Simula que o artista existe no sistema
         when(artistaService.buscarPorId(1L))
                 .thenReturn(artista);
 
-        when(gravadoraService.buscarPorId(1L))          // ← mock da gravadora
+        // Simula que a gravadora existe no sistema        
+        when(gravadoraService.buscarPorId(1L))
                 .thenReturn(gravadora);
 
-        when(albumRepository.countByArtista_IdArtistaAndDtAnoLancamento(
-                1L, albumDTO.dtAnoLancamento()))
-                .thenReturn(0);
-
+         // Simula que não existe conflito de título com outro álbum do mesmo artista (RN-03)        
         when(albumRepository.findByDcTituloAndArtista_IdArtista(
                 albumDTO.dcTitulo(), 1L))
                 .thenReturn(Collections.emptyList());
 
+        // Simula a contagem de álbuns no ano e retorna 1 (o próprio álbum sendo editado)
+        // O service desconta esse 1 para não bloquear indevidamente a edição (RN-04)
+        when(albumRepository.countByArtista_IdArtistaAndAno(
+                1L, 2024))
+                .thenReturn(0);
+
+        // Simula que o banco salva e retorna o álbum atualizado        
         when(albumRepository.save(any(Album.class)))
                 .thenReturn(album);
 
-        Album atualizado = albumService.salvarAlbum(albumDTO);
+        // Executa o método de atualização, passa o ID e o DTO com os novos dados        
+        Album atualizado = albumService.atualizarAlbum(1L, albumDTO); // atualizarAlbum
 
-        assertNotNull(atualizado);
+        assertNotNull(atualizado); // Verifica se os dados foram atualizados corretamente
         assertEquals(albumDTO.dcTitulo(), atualizado.getDcTitulo());
-        assertEquals("COMPLETO", atualizado.getDcStatus()); // ← assert de status
+        assertEquals("COMPLETO", atualizado.getDcStatus());
 
-        verify(albumRepository, times(1)).save(any(Album.class));
+        verify(albumRepository, times(1)).save(any(Album.class)); // Confirma que o save foi chamado exatamente 1 vez
     }
 
     // Cenário 5 — deletar álbum

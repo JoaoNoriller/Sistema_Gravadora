@@ -35,7 +35,10 @@ class GravadoraServiceTest {
     private Gravadora gravadora;
     private GravadoraDTO gravadoraDTO;
 
-    @BeforeEach // Executado antes de cada teste para inicializar uma gravadora padrão
+    /* Executado antes de cada teste
+     * Prepara os objetos base para evitar repetição de código
+     */
+    @BeforeEach
     void setup() {
 
         gravadora = new Gravadora();

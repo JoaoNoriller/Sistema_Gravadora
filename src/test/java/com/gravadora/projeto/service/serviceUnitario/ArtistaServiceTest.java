@@ -38,8 +38,10 @@ class ArtistaServiceTest {
     private ArtistaDTO artistaDTO;
     private ArtistaDTO artistaAtualizadoDTO;
 
-
-    @BeforeEach // Roda antes de cada teste
+    /* Executado antes de cada teste
+     * Prepara os objetos base para evitar repetição de código
+     */
+    @BeforeEach 
     void setup() { 
         artista = new Artista();
         artista.setIdArtista(1L);

@@ -38,6 +38,9 @@ public class AlbumServiceIntegrationTest {
     private Artista artista;
     private Gravadora gravadora;
 
+    /* Executado antes de cada teste
+     * Prepara os objetos base para evitar repetição de código
+     */
     @BeforeEach
     void setup() {
         artista = new Artista();
@@ -53,12 +56,12 @@ public class AlbumServiceIntegrationTest {
         gravadora.setDcCnpj("12345678000199");
         gravadora = gravadoraRepository.save(gravadora);
 
-        // DTO base válido — passa em todas as regras
+        // DTO base válido passa em todas as regras
         albumDTOValido = new AlbumDTO(
                 null,
                 "Parachutes",
                 LocalDate.of(2000, 7, 10),
-                null,                        // status é gerado automaticamente pelo service
+                null,            // status é gerado automaticamente pelo service
                 10,
                 Time.valueOf("01:30:00"),
                 artista.getIdArtista(),
@@ -90,7 +93,7 @@ public class AlbumServiceIntegrationTest {
                 "Parachutes",
                 LocalDate.of(2000, 7, 10),
                 null,
-                5,                           // ← inválido (deve ser > 5)
+                5,               // inválido (deve ser > 5)
                 Time.valueOf("01:30:00"),
                 artista.getIdArtista(),
                 gravadora.getIdGravadora()
@@ -110,7 +113,7 @@ public class AlbumServiceIntegrationTest {
     public void naoDeveSalvarTituloInvalido() {
         AlbumDTO dtoInvalido = new AlbumDTO(
                 null,
-                "AB",                        // ← inválido (< 3 chars)
+                "AB",              // inválido (< 3 caracteres)
                 LocalDate.of(2000, 7, 10),
                 null,
                 10,
@@ -137,7 +140,7 @@ public class AlbumServiceIntegrationTest {
                 LocalDate.of(2000, 7, 10),
                 null,
                 10,
-                Time.valueOf("02:01:00"),    // ← inválido (> 7200s)
+                Time.valueOf("02:01:00"),    // inválido (> 7200s)
                 artista.getIdArtista(),
                 gravadora.getIdGravadora()
         );
@@ -158,12 +161,12 @@ public class AlbumServiceIntegrationTest {
 
         AlbumDTO dtoDuplicado = new AlbumDTO(
                 null,
-                "Parachutes",               // ← mesmo título
+                "Parachutes",        // mesmo título
                 LocalDate.of(2001, 1, 1),
                 null,
                 10,
                 Time.valueOf("01:00:00"),
-                artista.getIdArtista(),     // ← mesmo artista
+                artista.getIdArtista(),     // mesmo artista
                 gravadora.getIdGravadora()
         );
 
@@ -223,7 +226,7 @@ public class AlbumServiceIntegrationTest {
                 "Ghost Stories",
                 LocalDate.of(2014, 5, 19),
                 null,
-                7,                           // ← entre 6 e 9 = INCOMPLETO
+                7,                   // entre 6 e 9 = INCOMPLETO
                 Time.valueOf("00:45:00"),
                 artista.getIdArtista(),
                 gravadora.getIdGravadora()
