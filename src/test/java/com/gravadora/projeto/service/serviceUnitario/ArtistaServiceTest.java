@@ -24,6 +24,7 @@ import com.gravadora.projeto.model.Artista;
 import com.gravadora.projeto.repository.ArtistaRepository;
 import com.gravadora.projeto.service.ArtistaService;
 
+@SuppressWarnings("unused") //Deve ignorar avisos de código não utilizado
 @ExtendWith(MockitoExtension.class) // Habilita o Mockito para os testes
 class ArtistaServiceTest {
 

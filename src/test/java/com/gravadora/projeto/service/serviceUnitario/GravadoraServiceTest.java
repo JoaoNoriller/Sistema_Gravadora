@@ -23,6 +23,7 @@ import com.gravadora.projeto.model.Gravadora;
 import com.gravadora.projeto.repository.GravadoraRepository;
 import com.gravadora.projeto.service.GravadoraService;
 
+@SuppressWarnings("unused") //Deve ignorar avisos de código não utilizado
 @ExtendWith(MockitoExtension.class) // Habilita o Mockito para os testes
 class GravadoraServiceTest {
 

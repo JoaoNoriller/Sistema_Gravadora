@@ -23,6 +23,7 @@ import jakarta.transaction.Transactional;
 
 @SpringBootTest
 @Transactional
+@SuppressWarnings("unused") //Deve ignorar avisos de código não utilizado
 public class AlbumServiceIntegrationTest {
 
     @Autowired

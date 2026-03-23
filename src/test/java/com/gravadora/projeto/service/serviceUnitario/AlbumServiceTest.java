@@ -30,6 +30,7 @@ import com.gravadora.projeto.service.AlbumService;
 import com.gravadora.projeto.service.ArtistaService;
 import com.gravadora.projeto.service.GravadoraService; // ← IMPORT ADICIONADO
 
+@SuppressWarnings("unused") //Deve ignorar avisos de código não utilizado
 @ExtendWith(MockitoExtension.class)
 class AlbumServiceTest {
 
