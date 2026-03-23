@@ -87,8 +87,8 @@ class GravadoraServiceTest {
     }
 
     @Test
-    void deveAtualizarGravadora() { 
-        
+    void deveAtualizarGravadora() {
+
         // Atualiza nome da Gravadora
         GravadoraDTO dtoAtualizado = new GravadoraDTO("Nova Gravadora", "Rua ABC", "47999999999", "Brasil",
                 LocalDate.of(2000, 1, 1), "12345678000100");
@@ -106,10 +106,17 @@ class GravadoraServiceTest {
     }
 
     @Test
-    void deveExcluirGravadora() { // simula excluir
+    void deveExcluirGravadora() {
+
+        // Simula que a gravadora existe no banco
+        when(gravadoraRepository.existsById(1L)).thenReturn(true);
+
+        // Simula o deleteById sem fazer nada
         doNothing().when(gravadoraRepository).deleteById(1L);
 
-        gravadoraService.excluir(1L); // chama o método
-        verify(gravadoraRepository, times(1)).deleteById(1L); // Verifica se deleteById foi executado exatamente 1 vez
+        gravadoraService.excluir(1L);
+
+        // Verifica se deleteById foi executado exatamente 1 vez
+        verify(gravadoraRepository, times(1)).deleteById(1L);
     }
 }
