@@ -55,7 +55,7 @@ Para executar o projeto, siga os passos abaixo
 
 <h1>Funcionalidades</h1>
 
-- `Cadastro de Artistas:` Permite registrar novos artistas no sistema, garantindo que não existam dois artistas cadastrados com o mesmo nome.
+- `Cadastro de Artistas:` Permite registrar novos artistas no sistema, garantindo que não existam dois artistas cadastrados com o mesmo nome. Limite de 10 álbuns por artista por ano, aplicado automaticamente.
 - `Cadastro de Gravadoras:` Permite ao registrador gravar informações como nome, endereço, telefone, país, CNPJ e dados de fundação. Garante também que não exista duas gravadoras cadastradas com o mesmo nome ou Cnpj.
 - `Cadastro de Álbuns:` Permite registrar álbuns vinculados a um artista e uma gravadora existente, com validações de quantidade de músicas, título, duração e limite anual de lançamentos.
 - `Listagem e Consulta:` Possibilidade de listar todos os registros e buscar artistas, gravadoras e álbuns individualmente pelo seu identificador (ID).
